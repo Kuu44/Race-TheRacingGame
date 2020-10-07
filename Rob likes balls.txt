@@ -2,9 +2,7 @@ He really does
 Really? didn't know that
 <<<<<<< HEAD
 It's weirdly interesting though.
-=======
-<<<<<<< HEAD
-
+Hmm, interesting indeed
 
 Robert: Yes fellas, I like em, I like licking em and chewing em and swallowing em whole, those
 spicy nutella balls fried and curried and dipped in onion sauce don't last a minute in front of me
@@ -25,3 +23,4 @@ It's weirdly interesting though.
 >>>>>>> eb6d1107ac95c49ef6fd7cb55fd4ad2aa020bbf2
 >>>>>>> 14402a6800ac520bd7f1f0470011c56902ce49c9
 OKAY@
+>>>>>>> b5d82bb0842603dc97b27d412a7d67d8603636e4
