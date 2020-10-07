@@ -1,0 +1,56 @@
+sudo: required
+language: bash
+env:
+  global:
+  - BASE_IMAGE_NAME=gableroux/unity3d:2020.1.7f1
+  - BUILD_NAME=Race
+services:
+- docker
+before_install:
+#- openssl aes-256-cbc -K $encrypted_ff1a8d824b7b_key -iv $encrypted_ff1a8d824b7b_iv -in Unity_v2019.x1.ulf.enc -out ./Unity_v2019.x1.ulf -d
+- export UNITY_LICENSE_CONTENT=`cat Unity_v2019.x1.ulf`
+- docker pull ${BASE_IMAGE_NAME}-windows
+- docker pull ${BASE_IMAGE_NAME}-android
+before_script:
+- chmod +x ci/webhook_send.sh
+- "./ci/webhook_send.sh started $WEBHOOK_URL"
+
+- chmod +x ./ci/docker_build.sh && chmod +x ./ci/build.sh && chmod +x ./ci/before_script.sh
+  && chmod +x ./ci/get_license.sh
+script:
+- export BUILD_TARGET=StandaloneWindows64; export IMAGE_NAME=${BASE_IMAGE_NAME}-windows;
+  ./ci/docker_build.sh
+#- export BUILD_APP_BUNDLE=false;
+- export BUILD_TARGET=Android; export IMAGE_NAME=${BASE_IMAGE_NAME}-android; ./ci/docker_build.sh
+#- export BUILD_APP_BUNDLE=true;
+#- export BUILD_TARGET=Android; export IMAGE_NAME=${BASE_IMAGE_NAME}-android; ./ci/docker_build.sh
+before_deploy:
+#Set up git user name and tag this commit
+- git config --local user.name "Kuu44"
+- git config --local user.email "kushal-shrestha@hotmail.com"
+- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+- git tag $TRAVIS_TAG
+
+- zip -r windows "./Builds/StandaloneWindows64/"
+- export COMMIT_MESSAGE_INFO="$(git log -1 "$TRAVIS_COMMIT" --pretty="%s")"
+- export COMMIT_AUTHOR_INFO="$(git log -1 "$TRAVIS_COMMIT" --pretty="%cN")"
+deploy:
+  provider: releases
+  api-key: "$GITHUB_OAUTH_TOKEN"
+  name: "${TRAVIS_COMMIT:0:7}"
+  body: "$COMMIT_MESSAGE_INFO - $COMMIT_AUTHOR_INFO"
+  file:
+  - windows.zip
+  - "./Builds/Android/${BUILD_NAME}.apk"
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true
+  
+
+after_success:
+- chmod +x ci/webhook_send.sh
+- "./ci/webhook_send.sh success $WEBHOOK_URL"
+after_failure:
+- chmod +x ci/webhook_send.sh
+- "./ci/webhook_send.sh failure $WEBHOOK_URL"
