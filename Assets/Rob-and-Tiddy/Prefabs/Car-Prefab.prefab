@@ -175,6 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4976448331159369590}
   - component: {fileID: 4977103306315388355}
+  - component: {fileID: 7462978233502958456}
   m_Layer: 0
   m_Name: Car-Prefab
   m_TagString: Untagged
@@ -210,6 +211,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a02652b8843c86e449c6ce94f3a578d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &7462978233502958456
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6469838717729688234}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0.19, z: 0.06}
 --- !u!1 &8927114120813520051
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +250,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8927114120813520051}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.087, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1024163597805937024}
