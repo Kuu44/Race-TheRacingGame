@@ -10,13 +10,13 @@ case $1 in
   "success" )
     EMBED_COLOR=3066993
     STATUS_MESSAGE="Passed"
-    AVATAR="https://travis-ci.org/images/logos/TravisCI-Mascot-blue.png"
+    AVATAR="https://i.imgur.com/qKyBF2S.png"
     ;;
 
   "failure" )
     EMBED_COLOR=15158332
     STATUS_MESSAGE="Failed"
-    AVATAR="https://travis-ci.org/images/logos/TravisCI-Mascot-red.png"
+    AVATAR="https://i.imgur.com/JUjcJyn.png"
     ;;
 
   "started" )
@@ -28,7 +28,7 @@ case $1 in
   * )
     EMBED_COLOR=0
     STATUS_MESSAGE="Status Unknown"
-    AVATAR="https://travis-ci.org/images/logos/TravisCI-Mascot-1.png"
+    AVATAR="https://i.imgur.com/jsMZeMS.png"
     ;;
 esac
 
