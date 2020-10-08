@@ -14,7 +14,7 @@ public class CarPhysics : MonoBehaviour
     }
     Vector3 deltaMovement = Vector3.zero;
 
-    void AddForce(Vector3 force){
+    public void AddForce(Vector3 force){
         deltaMovement += force;
     }
 
