@@ -13,5 +13,6 @@ public class SceneObjects : ControllerBase<SceneObjects>
     }
  
     public Camera carCam;
+    public Collider trackCollider;
 
 }
