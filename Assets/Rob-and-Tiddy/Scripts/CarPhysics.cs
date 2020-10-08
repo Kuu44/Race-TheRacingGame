@@ -11,6 +11,7 @@ public class CarPhysics : MonoBehaviour
     {
         //myCarPhysics = this.GetComponent<CarPhysics>();
         Collider temp = SceneObjects.current.trackCollider;
+        StartCoroutine(physicsLoop());
     }
     Vector3 deltaMovement = Vector3.zero;
 
