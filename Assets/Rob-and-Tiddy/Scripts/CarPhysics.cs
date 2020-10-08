@@ -12,17 +12,31 @@ public class CarPhysics : MonoBehaviour
         //myCarPhysics = this.GetComponent<CarPhysics>();
         Collider temp = SceneObjects.current.trackCollider;
     }
-
+    Vector3 deltaMovement = Vector3.zero;
 
     void AddForce(Vector3 force){
-        transform.position += force;
+        deltaMovement += force;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 posVec = SceneObjects.current.trackCollider.ClosestPoint(transform.position) - transform.position;
-        Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight / Mathf.Pow(posVec.magnitude, MainController.current.gravityExponent);
+        //Vector3 posVec = SceneObjects.current.trackCollider.ClosestPoint(transform.position) - transform.position;
+        //Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight / Mathf.Pow(posVec.magnitude, MainController.current.gravityExponent);
+        
+
+
+         
         //AddForce(gravity);
+    }
+
+    IEnumerator physicsLoop(){
+        for(;;){
+
+            deltaMovement *= MainController.current.airResistance;
+
+            transform.position += deltaMovement;
+            yield return new WaitForSeconds(0.05f);
+        }
     }
 }
