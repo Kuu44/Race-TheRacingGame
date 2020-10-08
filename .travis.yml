@@ -7,7 +7,7 @@ env:
 services:
 - docker
 before_install:
-- openssl aes-256-cbc -K $encrypted_57bff8e93278_key -iv $encrypted_57bff8e93278_iv -in Unity_v2020.x.ulf.enc -out ./Unity_v2020.x.ulf -d
+#- openssl aes-256-cbc -K $encrypted_57bff8e93278_key -iv $encrypted_57bff8e93278_iv -in Unity_v2020.x.ulf.enc -out ./Unity_v2020.x.ulf -d
 - export UNITY_LICENSE_CONTENT=`cat Unity_v2020.x.ulf`
 - docker pull ${BASE_IMAGE_NAME}-windows
 - docker pull ${BASE_IMAGE_NAME}-android
