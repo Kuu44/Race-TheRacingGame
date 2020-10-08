@@ -22,7 +22,7 @@ case $1 in
   "started" )
     EMBED_COLOR=12370112
     STATUS_MESSAGE="Started"
-    AVATAR="https://conceptdraw.com/a1718c3/p1/preview/640/pict--start-project-project-management---vector-stencils-library.png--diagram-flowchart-example.png"
+    AVATAR="https://i.imgur.com/jsMZeMS.png"
     ;;
 
   * )
