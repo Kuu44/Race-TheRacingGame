@@ -7,11 +7,10 @@ using UnityEngine;
 public class JkNetworkManager : NetworkManager
 {
     public Transform position1, position2, position3, position4;
-
+    Color cubeColor;
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         Transform client;
-        Color cubeColor;
         //assigns a position and color for each new cube (max 4)
         switch (numPlayers)
         {
@@ -38,9 +37,7 @@ public class JkNetworkManager : NetworkManager
         }
 
         GameObject player = Instantiate(playerPrefab, client.position, client.rotation);
-
-        Material mat = player.GetComponent<MeshRenderer>().material;
-        mat.color = cubeColor;
+        player.GetComponent<Movement>().SetColor(cubeColor);
 
         NetworkServer.AddPlayerForConnection(conn, player);
     }
