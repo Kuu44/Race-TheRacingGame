@@ -46,7 +46,7 @@ before_deploy:
 deploy:
   provider: releases
   api-key: "$GITHUB_OAUTH_TOKEN"
-  name: "${TRAVIS_COMMIT:0:7}"
+  name: "build-${TRAVIS_BUILD_NUMBER}"
   body: "$COMMIT_MESSAGE_INFO - $COMMIT_AUTHOR_INFO"
   file:
   - windows.zip
@@ -54,6 +54,8 @@ deploy:
   #- webgl.zip
   skip_cleanup: true
   draft: true
+  on:
+    all_branches: true
 
 after_success:
 - chmod +x ci/webhook_send.sh
