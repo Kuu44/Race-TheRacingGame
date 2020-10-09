@@ -38,7 +38,7 @@ COMMIT_SUBJECT="$(git log -1 "$TRAVIS_COMMIT" --pretty="%s")"
 COMMIT_MESSAGE="$(git log -1 "$TRAVIS_COMMIT" --pretty="%b")" | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g'
 
 if [ "$AUTHOR_NAME" == "$COMMITTER_NAME" ]; then
-  CREDITS="$AUTHOR_NAME razzled & dazzled"
+  CREDITS="$AUTHOR_NAME has done ze Dictator's bidding"
 else
   CREDITS="$AUTHOR_NAME razzled & $COMMITTER_NAME dazzled"
 fi

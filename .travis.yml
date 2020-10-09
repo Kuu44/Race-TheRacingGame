@@ -47,8 +47,10 @@ deploy:
   #- webgl.zip
   skip_cleanup: true
   overwrite: true
+  draft: true
   on:
     tags: true
+
 
 after_success:
 - chmod +x ci/webhook_send.sh
