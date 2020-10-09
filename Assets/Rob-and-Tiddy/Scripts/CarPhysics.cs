@@ -74,7 +74,7 @@ public class CarPhysics : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(physicsLoop());
+        //StartCoroutine(physicsLoop());
         wayPointAheadI = 1;
         wayPointBehindI = 0;
     }
@@ -89,7 +89,7 @@ public class CarPhysics : MonoBehaviour
             wayPointBehindI = indexIncrement(wayPointBehindI, -1, SceneObjects.current.trackWayPoints.Count);
         }
 
-        
+
         wayPointMarker.transform.position = wayPointAhead;
         wayPointMarkerBehind.transform.position = wayPointBehind;Vector3 lineDirection = (wayPointAhead - wayPointBehind).normalized;
         
@@ -100,24 +100,37 @@ public class CarPhysics : MonoBehaviour
         
         self.AddForce(gravity*10f);
 
+        Vector3 normalVec = -posVec.normalized;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, posVec, out hit, 100)){
+            if(hit.collider.tag == "Track"){
+                    normalVec = hit.normal;
+            }
+        }
+        
 
-        Vector3 orientVec = Vector3.Cross(transform.up, -posVec.normalized);
+        Vector3 orientVec = Vector3.Cross(transform.up, normalVec);
         self.AddTorque(orientVec*2f);
         Debug.DrawLine(transform.position, closestPointOnTrack, Color.black);
 
-        transform.position += transform.forward * deltaForwards * Time.deltaTime * 0.1f;
+        
+
+        if(Time.frameCount % 10 == 0){
+            print((int)(deltaForwards) + " km/hr");
+            deltaForwards *= MainController.current.airResistance;
+        }
+
+        transform.position += transform.forward * deltaForwards * (Time.deltaTime) * 0.1f;
         //AddForce(gravity);
 
     }
 
-    IEnumerator physicsLoop(){
+    /*IEnumerator physicsLoop(){
         for(;;){
-
-
-            deltaForwards *= MainController.current.airResistance;
+            
 
             
             yield return new WaitForSeconds(0.05f);
         }
-    }
+    }*/
 }

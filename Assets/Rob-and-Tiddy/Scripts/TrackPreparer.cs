@@ -23,25 +23,22 @@ public class TrackPreparer : MonoBehaviour
 
     void Start()
     {
-        /*trackDirectorMesh = SceneObjects.current.trackDirector.GetComponent<MeshFilter>().mesh;
+        trackDirectorMesh = SceneObjects.current.trackDirector.GetComponent<MeshFilter>().mesh;
         vertices = trackDirectorMesh.vertices;
-        int[] triangles = trackDirectorMesh.triangles;
+       /* int[] triangles = trackDirectorMesh.triangles;
         bool[] vertexInWaypoint = new bool[vertices.Length];
         List<meshTriangle> meshTriangles = new List<meshTriangle>();
 
         for(int i = 0; i < triangles.Length; i = i + 3){
             meshTriangles.Add(new meshTriangle(triangles[i], triangles[i+1], triangles[i+2]));
         }
-
+*/
         for(int i = 0; i < vertices.Length; i++){
             vertices[i] = SceneObjects.current.trackDirector.transform.TransformPoint(vertices[i]);
-            if(vertices[i].y > -1.59){
                 GameObject temp = Instantiate(dummyVertexObject, vertices[i], Quaternion.identity);
-            
                 temp.name = i.ToString() + " tempwaypoint";
-            }
         }
-
+/*
         for(int i = 0; i < vertices.Length; i++){
             for(int ii = 0; ii < meshTriangles.Count; ii++){
                 if(meshTriangles[ii].i1 == i){
@@ -61,8 +58,8 @@ public class TrackPreparer : MonoBehaviour
     }
 
 
-
-    /*float xzDistance(Vector3 a, Vector3 b){
+/*
+    float xzDistance(Vector3 a, Vector3 b){
         return (new Vector3(a.x, 0, a.z) - new Vector3(b.x, 0, b.z)).magnitude;
     }*/
     // Update is called once per frame
@@ -70,10 +67,10 @@ public class TrackPreparer : MonoBehaviour
     {
         
 
-       /* if(Input.GetMouseButtonDown(0)){
+       if(Input.GetMouseButtonDown(0)){
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100)){
+            if (Physics.Raycast(ray, out hit, 2000)){
                 if(hit.collider.tag == "Track"){
                     MeshRenderer temp = hit.transform.GetComponent<MeshRenderer>();
                     temp.material.color = Color.red;
@@ -81,7 +78,7 @@ public class TrackPreparer : MonoBehaviour
                     hit.transform.SetParent(tempWaypoints.transform);
                 }
             }
-        }*/
+        }
 
         
     }

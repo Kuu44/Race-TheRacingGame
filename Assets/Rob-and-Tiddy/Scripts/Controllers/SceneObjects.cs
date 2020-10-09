@@ -15,6 +15,8 @@ public class SceneObjects : ControllerBase<SceneObjects>
     public Camera carCam;
     public Transform track;
 
+    public GameObject trackDirector;
+
     public List<Vector3> trackWayPoints = new List<Vector3>();
 
 }
