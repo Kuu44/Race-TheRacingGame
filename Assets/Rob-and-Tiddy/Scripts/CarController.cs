@@ -6,13 +6,21 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
+    
+
+
+
+
+
+
+
     // Start is called before the first frame update
     [SerializeField]
-    [Range(0, 20f)]
+    [Range(0, 3f)]
     private float accConstant = 0.1f;
 
     [SerializeField]
-    [Range(0, 10f)]
+    [Range(0, 3f)]
     private float turnStrength = 4;
 
     public CarPhysics carPhysics;

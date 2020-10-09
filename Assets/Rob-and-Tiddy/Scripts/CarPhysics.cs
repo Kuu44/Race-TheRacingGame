@@ -88,6 +88,8 @@ public class CarPhysics : MonoBehaviour
         while(Vector3.Dot(transform.position - wayPointBehind, wayPointAhead-wayPointBehind) < 0){
             wayPointBehindI = indexIncrement(wayPointBehindI, -1, SceneObjects.current.trackWayPoints.Count);
         }
+
+        
         wayPointMarker.transform.position = wayPointAhead;
         wayPointMarkerBehind.transform.position = wayPointBehind;Vector3 lineDirection = (wayPointAhead - wayPointBehind).normalized;
         
