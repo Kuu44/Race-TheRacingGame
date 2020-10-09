@@ -93,8 +93,8 @@ public class CarPhysics : MonoBehaviour
 
     public void AccelerateForward(float strength){
         if(Mathf.Abs(strength) > 0.01f){
-            tractionSpeed += strength * thrust * topSpeed * 0.01f;
-            propulsion += strength * transform.forward * thrust;
+            tractionSpeed += strength * thrust * topSpeed * 2;
+            propulsion += strength * transform.forward * thrust * topSpeed * 2;
             if(thrust > 0.5f){
                 StartThrusters();
             }else{
@@ -109,7 +109,7 @@ public class CarPhysics : MonoBehaviour
 
     public void AddUpwardsTorque(float strength){
         if(Mathf.Abs(strength) > 0.01f){
-            self.AddTorque(transform.up * strength * turnStrength * 0.04f);
+            self.AddTorque(transform.up * strength * turnStrength * 3);
             turning = true;
         }
     }
@@ -123,7 +123,7 @@ public class CarPhysics : MonoBehaviour
         wayPointBehindI = 0;
     }
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
         while(Vector3.Dot(transform.position - wayPointAhead, wayPointBehind-wayPointAhead) < 0){
             wayPointBehindI = indexIncrement(wayPointBehindI, 1, SceneObjects.current.trackWayPoints.Count);
@@ -166,17 +166,16 @@ public class CarPhysics : MonoBehaviour
 
         Vector3 orientVec = Vector3.Cross(transform.up, normalVec);
         self.AddTorque(orientVec*orientStrength);
-        Debug.DrawLine(transform.position, closestPointOnTrack, Color.black);
 
         if(Time.frameCount % 10 == 0){
             UIController.current.speed = (int)(tractionSpeed);
-            
-            tractionSpeed *= MainController.current.airResistance;
-            propulsion *= MainController.current.airResistance;
         }
+            
+        tractionSpeed *= MainController.current.airResistance;
+        propulsion *= MainController.current.airResistance;
 
 
-        deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction) * (Time.deltaTime) * 0.1f;
+        deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction) * (Time.fixedDeltaTime) * 0.1f;
         turning = false;
         transform.position += deltaPosition;
 

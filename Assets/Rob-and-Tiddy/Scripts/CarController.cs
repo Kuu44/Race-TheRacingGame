@@ -18,9 +18,12 @@ public class CarController : MonoBehaviour
                     SceneObjects.current.ActiveCar = SceneObjects.current.cars[i];
                     break;
                 }
+
             }
+            SceneObjects.current.ActiveCar.transform.SetPositionAndRotation(SceneObjects.current.gridPositions[startPositionOnGrid-1].position, SceneObjects.current.gridPositions[startPositionOnGrid].rotation);
+
         }else{
-            GameObject car = Instantiate(SceneObjects.current.defaultCar, SceneObjects.current.gridPositions[startPositionOnGrid].position, SceneObjects.current.gridPositions[startPositionOnGrid].rotation);
+            GameObject car = Instantiate(SceneObjects.current.defaultCar, SceneObjects.current.gridPositions[startPositionOnGrid-1].position, SceneObjects.current.gridPositions[startPositionOnGrid].rotation);
             SceneObjects.current.cars.Add(car);
             SceneObjects.current.ActiveCar = car;
             carPhysics = car.GetComponent<CarPhysics>();
@@ -29,13 +32,13 @@ public class CarController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
 
-        carPhysics.AccelerateForward(inputY);
-        carPhysics.AddUpwardsTorque(inputX);
+        carPhysics.AccelerateForward(inputY * Time.fixedDeltaTime);
+        carPhysics.AddUpwardsTorque(inputX * Time.fixedDeltaTime);
     }
 }
 

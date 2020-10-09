@@ -20,18 +20,20 @@ public class CarCamera : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
         if(SceneObjects.current.ActiveCar != null){
-            Vector3 carPos = SceneObjects.current.ActiveCar.transform.position;
-            Vector3 carBack = -SceneObjects.current.ActiveCar.transform.forward;
-            Vector3 carUp = SceneObjects.current.ActiveCar.transform.up;
-            Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
-            Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 
-            transform.LookAt(Vector3.Lerp(transform.position + transform.forward * (lookTarget - transform.position).magnitude,lookTarget, lookSpeed), Vector3.Slerp(transform.up, carUp, lookSpeed));
+                Vector3 carPos = SceneObjects.current.ActiveCar.transform.position;
+                Vector3 carBack = -SceneObjects.current.ActiveCar.transform.forward;
+                Vector3 carUp = SceneObjects.current.ActiveCar.transform.up;
+                Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
+                Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 
-            transform.position = Vector3.Lerp(transform.position, movetarget, followSpeed);
+                transform.LookAt(Vector3.Lerp(transform.position + transform.forward,lookTarget, lookSpeed), Vector3.Slerp(transform.up, carUp, lookSpeed));
+
+                transform.position = Vector3.Lerp(transform.position, movetarget, followSpeed);
+
         }
     }
 }

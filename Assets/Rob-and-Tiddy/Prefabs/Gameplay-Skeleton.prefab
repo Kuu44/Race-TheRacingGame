@@ -811,7 +811,7 @@ MonoBehaviour:
   gravityExponent: 0.8
   turningThrustLoss: 0.2
   averageCarWeight: 1
-  airResistance: 0.9
+  airResistance: 0.9605
   checkWayPointsPerFrame: 5
   markClosestWaypoints: 1
 --- !u!1 &4336530978781034436
