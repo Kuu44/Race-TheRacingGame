@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class CarPhysics : MonoBehaviour
 {
-    // Start is called before the first frame update
 
-    //CarPhysics myCarPhysics;
+    public bool mainCar;
+
+
+    [SerializeField]
+    [Range(0, 400f)]
+    private float topSpeed = 200f;
+
+    [SerializeField]
+    [Range(0, 10f)]
+    private float turnStrength = 5;
 
     [Range(0f,1f)]
     public float traction = 0.5f;
@@ -15,37 +23,13 @@ public class CarPhysics : MonoBehaviour
     public float orientStrength = 3;
 
     float thrust = 1;
-
     public List<ParticleSystem> thrusters;
-
-    public Rigidbody self;
-    public GameObject wayPointMarker;
-    public GameObject wayPointMarkerBehind;
+    Rigidbody self;
     float tractionSpeed;
-
-    bool grounded;
-
     Vector3 deltaPosition;
-
     Vector3 propulsion;
-    //float deltaUpwardsRotation;
     int wayPointAheadIndex;
     int wayPointBehindIndex;
-
-    /*void OnCollisionStay(Collision other){
-        if(other.transform.tag == "Track"){
-            if(!grounded){
-                grounded = true;
-            }
-        }
-    }
-
-    void OnCollisionExit(Collision other){
-        if(other.transform.tag == "Track"){
-            grounded = false;
-        }
-    }*/
-
 
     int wayPointAheadI{
         get{
@@ -88,12 +72,6 @@ public class CarPhysics : MonoBehaviour
 
     Vector3 wayPointAhead;
     Vector3 wayPointBehind;
-    int numWayPoints;
-    public void AddForce(Vector3 force){
-       // propulsion += force * Time.deltaTime;
-        self.AddForce(force);
-        //transform.position += force * Time.deltaTime;
-    }
 
     public void StartThrusters(){
             foreach(ParticleSystem thruster in thrusters){
@@ -115,9 +93,13 @@ public class CarPhysics : MonoBehaviour
 
     public void AccelerateForward(float strength){
         if(Mathf.Abs(strength) > 0.01f){
-            tractionSpeed += strength * thrust;
+            tractionSpeed += strength * thrust * topSpeed * 0.01f;
             propulsion += strength * transform.forward * thrust;
-            StartThrusters();
+            if(thrust > 0.5f){
+                StartThrusters();
+            }else{
+                StopThrusters();
+            }
         }else{
 
             StopThrusters();
@@ -127,7 +109,7 @@ public class CarPhysics : MonoBehaviour
 
     public void AddUpwardsTorque(float strength){
         if(Mathf.Abs(strength) > 0.01f){
-            self.AddTorque(transform.up * strength * 0.1f);
+            self.AddTorque(transform.up * strength * turnStrength * 0.04f);
             turning = true;
         }
     }
@@ -136,14 +118,13 @@ public class CarPhysics : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(physicsLoop());
+        self = transform.GetComponent<Rigidbody>();
         wayPointAheadI = 1;
         wayPointBehindI = 0;
     }
     // Update is called once per frame
     void LateUpdate()
     {
-        //Debug.Log(Vector3.Dot(transform.position - wayPointAhead, wayPointBehind-wayPointAhead));
         while(Vector3.Dot(transform.position - wayPointAhead, wayPointBehind-wayPointAhead) < 0){
             wayPointBehindI = indexIncrement(wayPointBehindI, 1, SceneObjects.current.trackWayPoints.Count);
         }
@@ -151,9 +132,13 @@ public class CarPhysics : MonoBehaviour
             wayPointBehindI = indexIncrement(wayPointBehindI, -1, SceneObjects.current.trackWayPoints.Count);
         }
 
-
-        wayPointMarker.transform.position = wayPointAhead;
-        wayPointMarkerBehind.transform.position = wayPointBehind;Vector3 lineDirection = (wayPointAhead - wayPointBehind).normalized;
+        if(SceneObjects.current.wayPointMarker != null && MainController.current.markClosestWaypoints){
+            SceneObjects.current.wayPointMarker.transform.position = wayPointAhead;
+            SceneObjects.current.wayPointMarkerBehind.transform.position = wayPointBehind;
+        }
+        
+        
+        Vector3 lineDirection = (wayPointAhead - wayPointBehind).normalized;
         
         
         Vector3 closestPointOnTrack = wayPointBehind + lineDirection * Vector3.Dot(lineDirection, transform.position - wayPointBehind);
@@ -181,14 +166,9 @@ public class CarPhysics : MonoBehaviour
 
         Vector3 orientVec = Vector3.Cross(transform.up, normalVec);
         self.AddTorque(orientVec*orientStrength);
-        //transform.localEulerAngles += new Vector3(0,0,Vector3.SignedAngle(transform.up,normalVec,transform.forward) * 0.05f);
-
         Debug.DrawLine(transform.position, closestPointOnTrack, Color.black);
 
-        
-        //print(grounded);
         if(Time.frameCount % 10 == 0){
-            //print((int)(tractionSpeed) + " km/hr");
             UIController.current.speed = (int)(tractionSpeed);
             
             tractionSpeed *= MainController.current.airResistance;
@@ -199,16 +179,6 @@ public class CarPhysics : MonoBehaviour
         deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction) * (Time.deltaTime) * 0.1f;
         turning = false;
         transform.position += deltaPosition;
-        //AddForce(gravity);
 
     }
-
-    /*IEnumerator physicsLoop(){
-        for(;;){
-            
-
-            
-            yield return new WaitForSeconds(0.05f);
-        }
-    }*/
 }

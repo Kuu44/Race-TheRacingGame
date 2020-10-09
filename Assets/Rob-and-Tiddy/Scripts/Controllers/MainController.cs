@@ -21,6 +21,8 @@ public class MainController : ControllerBase<MainController>
     [Range(2,20)]
     public int checkWayPointsPerFrame = 5;
 
+    public bool markClosestWaypoints = true;
+
     public override void OnAwake()
     {
         base.OnAwake();

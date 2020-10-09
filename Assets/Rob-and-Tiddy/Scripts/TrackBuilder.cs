@@ -8,6 +8,7 @@ public class TrackBuilder : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        trackWayPoints = SceneObjects.current.track.Find("WayPoints");
         for(int i = 0; i < trackWayPoints.childCount; i++){
             SceneObjects.current.trackWayPoints.Add(trackWayPoints.GetChild(i).position);
         }

@@ -6,29 +6,26 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    
-
-
-
-
-
-
-
-    // Start is called before the first frame update
-    [SerializeField]
-    [Range(0, 3f)]
-    private float accConstant = 0.1f;
-
-    [SerializeField]
-    [Range(0, 3f)]
-    private float turnStrength = 4;
-
-    public CarPhysics carPhysics;
-    //float velocityX =0,velocityY =0;
+    [Range(1,5)]
+    public int startPositionOnGrid = 1;
+    CarPhysics carPhysics;
     void Start()
     {
+        if(SceneObjects.current.cars.Count > 0){
+            for(int i = 0; i < SceneObjects.current.cars.Count; i++){
+                carPhysics = SceneObjects.current.cars[i].transform.GetComponent<CarPhysics>();
+                if(carPhysics.mainCar){
+                    SceneObjects.current.ActiveCar = SceneObjects.current.cars[i];
+                    break;
+                }
+            }
+        }else{
+            GameObject car = Instantiate(SceneObjects.current.defaultCar, SceneObjects.current.gridPositions[startPositionOnGrid].position, SceneObjects.current.gridPositions[startPositionOnGrid].rotation);
+            SceneObjects.current.cars.Add(car);
+            SceneObjects.current.ActiveCar = car;
+            carPhysics = car.GetComponent<CarPhysics>();
+        }
         
-        carPhysics = transform.GetComponent<CarPhysics>();
     }
 
     // Update is called once per frame
@@ -37,16 +34,8 @@ public class CarController : MonoBehaviour
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
 
-        //carPhysics.AddForce(transform.forward * accConstant * inputY);
-        carPhysics.AccelerateForward(accConstant * inputY);
-        carPhysics.AddUpwardsTorque(turnStrength * inputX);
-
-        //velocityY += inputY * speed * Time.deltaTime;
-        //print(velocityY);
-        //carPhysics.AddForce(velocityY);
-        // transform.Rotate(Vector3.up * inputX * Time.deltaTime * 10.0f);
-        // transform.Translate(Vector3.forward * velocityY * Time.deltaTime);
-        // velocityY -= velocityY * .2f * Time.deltaTime;
+        carPhysics.AccelerateForward(inputY);
+        carPhysics.AddUpwardsTorque(inputX);
     }
 }
 
