@@ -13,6 +13,8 @@ public class SceneObjects : ControllerBase<SceneObjects>
     }
  
     public Camera carCam;
-    public Collider trackCollider;
+    public Transform track;
+
+    public List<Vector3> trackWayPoints = new List<Vector3>();
 
 }
