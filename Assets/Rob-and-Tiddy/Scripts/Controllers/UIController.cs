@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : ControllerBase<UIController>
 {
@@ -13,7 +14,20 @@ public class UIController : ControllerBase<UIController>
     }
 
     //ADD OBJECTS LIKE THIS
-    public GameObject UIelement1;
-    public GameObject UIelement2;
+    int Speed;
+    public int speed{
+        get{
+            return Speed;
+        }
+        set{
+            Speed = value;
+            SpeedText.text = "SPEED: " + value.ToString() + " km/hr";
+        }
+    }
+
+
+    public Text SpeedText;
+    public Text StatusText;
     public GameObject UIelement3;
+
 }

@@ -9,6 +9,9 @@ public class MainController : ControllerBase<MainController>
 
     [Range(0.2f,3f)]
     public float gravityExponent = 0.8f;
+
+    [Range(0,1)]
+    public float turningThrustLoss = 0.2f;
     
     public float averageCarWeight = 1;
 
