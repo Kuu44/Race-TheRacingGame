@@ -10,8 +10,8 @@ before_install:
 #- openssl aes-256-cbc -K $encrypted_57bff8e93278_key -iv $encrypted_57bff8e93278_iv -in Unity_v2020.x.ulf.enc -out ./Unity_v2020.x.ulf -d
 - export UNITY_LICENSE_CONTENT=`cat Unity_v2020.x.ulf`
 - docker pull ${BASE_IMAGE_NAME}-windows
-- docker pull ${BASE_IMAGE_NAME}-android
-- docker pull ${BASE_IMAGE_NAME}-webgl
+#- docker pull ${BASE_IMAGE_NAME}-android
+#- docker pull ${BASE_IMAGE_NAME}-webgl
 before_script:
 - chmod +x ci/webhook_send.sh
 - "./ci/webhook_send.sh started $WEBHOOK_URL"
@@ -22,8 +22,8 @@ script:
 - export BUILD_TARGET=StandaloneWindows64; export IMAGE_NAME=${BASE_IMAGE_NAME}-windows;
   ./ci/docker_build.sh
 #- export BUILD_APP_BUNDLE=false;
-- export BUILD_TARGET=Android; export IMAGE_NAME=${BASE_IMAGE_NAME}-android; ./ci/docker_build.sh
-- export BUILD_TARGET=WebGL; export IMAGE_NAME=${BASE_IMAGE_NAME}-webgl; ./ci/docker_build.sh
+#- export BUILD_TARGET=Android; export IMAGE_NAME=${BASE_IMAGE_NAME}-android; ./ci/docker_build.sh
+#- export BUILD_TARGET=WebGL; export IMAGE_NAME=${BASE_IMAGE_NAME}-webgl; ./ci/docker_build.sh
 
 before_deploy:
 #Set up git user name and tag this commit
@@ -33,7 +33,7 @@ before_deploy:
 - git tag $TRAVIS_TAG
 
 - zip -r windows "./Builds/StandaloneWindows64/"
-- zip -r webgl "./Builds/WebGL/"
+#- zip -r webgl "./Builds/WebGL/"
 - export COMMIT_MESSAGE_INFO="$(git log -1 "$TRAVIS_COMMIT" --pretty="%s")"
 - export COMMIT_AUTHOR_INFO="$(git log -1 "$TRAVIS_COMMIT" --pretty="%cN")"
 deploy:
@@ -43,8 +43,8 @@ deploy:
   body: "$COMMIT_MESSAGE_INFO - $COMMIT_AUTHOR_INFO"
   file:
   - windows.zip
-  - "./Builds/Android/${BUILD_NAME}.apk"
-  - webgl.zip
+  #- "./Builds/Android/${BUILD_NAME}.apk"
+  #- webgl.zip
   skip_cleanup: true
   overwrite: true
   on:
