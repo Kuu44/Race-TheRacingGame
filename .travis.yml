@@ -1,3 +1,8 @@
+cache:
+  directories:
+    - .git/lfs
+git:
+  lfs_skip_smudge: true
 sudo: required
 language: bash
 env:
@@ -12,6 +17,8 @@ before_install:
 - docker pull ${BASE_IMAGE_NAME}-windows
 #- docker pull ${BASE_IMAGE_NAME}-android
 #- docker pull ${BASE_IMAGE_NAME}-webgl
+install:
+  - git lfs pull
 before_script:
 - chmod +x ci/webhook_send.sh
 - "./ci/webhook_send.sh started $WEBHOOK_URL"
@@ -39,18 +46,16 @@ before_deploy:
 deploy:
   provider: releases
   api-key: "$GITHUB_OAUTH_TOKEN"
-  name: "${TRAVIS_COMMIT:0:7}"
+  name: "build-${TRAVIS_BUILD_NUMBER}"
   body: "$COMMIT_MESSAGE_INFO - $COMMIT_AUTHOR_INFO"
   file:
   - windows.zip
   #- "./Builds/Android/${BUILD_NAME}.apk"
   #- webgl.zip
   skip_cleanup: true
-  overwrite: true
   draft: true
   on:
-    tags: true
-
+    all_branches: true
 
 after_success:
 - chmod +x ci/webhook_send.sh
