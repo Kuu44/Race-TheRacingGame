@@ -7,7 +7,7 @@ public class MainController : ControllerBase<MainController>
     [Range(0,5f)]
     public float gravityConstant = 0.5f;
 
-    [Range(0.2f,3f)]
+    [Range(-1f,3f)]
     public float gravityExponent = 0.8f;
 
     [Range(0,1)]

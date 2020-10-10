@@ -119,8 +119,10 @@ public class CarPhysics : MonoBehaviour
         if(strength < -0.01f){
             if(tractionSpeed > 0){
                 tractionSpeed *= (1 - brakeFactor * 0.01f);
+                propulsion *= (1 - brakeFactor * 0.01f);
             }else{
                 tractionSpeed += strength * thrust * 6 * (acceleration);
+                propulsion += strength * transform.forward * thrust * 6 * (acceleration);
             }
         }
     }   
@@ -138,9 +140,8 @@ public class CarPhysics : MonoBehaviour
     public void hardBrake(){
         tempTraction = 0;
         tractionSpeed *= (1 - brakeFactor * 0.005f);
+        propulsion *= (1 - brakeFactor * 0.005f);
     }
-
-
     bool turning;
 
     void Start()
@@ -206,6 +207,9 @@ public class CarPhysics : MonoBehaviour
         //dragFactor = 1;
         if(dragFactor < 0) dragFactor = 0;
         tractionSpeed *= dragFactor;
+
+        dragFactor = 1 - propulsion.magnitude * propulsion.magnitude * acceleration / (aerodynamic * 6000000.0f);
+        if(dragFactor < 0) dragFactor = 0;
         propulsion *= dragFactor;
 
         //kinetic friction
@@ -226,7 +230,7 @@ public class CarPhysics : MonoBehaviour
 
 
         deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction * tempTraction) * (Time.fixedDeltaTime) * 0.1f;
-        Debug.Log(propulsion + " " + deltaPosition);
+        Debug.Log(propulsion.magnitude + " " + deltaPosition);
 
         turning = false;
         tempTraction = 1;
