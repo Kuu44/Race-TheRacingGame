@@ -15,8 +15,10 @@ public class MainController : ControllerBase<MainController>
     
     public float averageCarWeight = 1;
 
-    [Range(0.1f,1f)]
+    //[Range(0f,1f)]
     public float airResistance = 0.95f;
+
+    public float kineticFriction = 0.1f;
 
     [Range(2,20)]
     public int checkWayPointsPerFrame = 5;

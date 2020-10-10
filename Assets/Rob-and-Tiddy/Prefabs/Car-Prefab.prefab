@@ -9755,7 +9755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCar: 0
-  topSpeed: 215
+  topSpeed: 400
   acceleration: 50
   turnStrength: 10
   traction: 1
