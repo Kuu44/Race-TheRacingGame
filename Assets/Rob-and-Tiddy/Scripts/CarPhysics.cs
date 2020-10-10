@@ -119,12 +119,12 @@ public class CarPhysics : MonoBehaviour
         }
 
         if(strength < -0.01f){
-            if(tractionSpeed > 0){
+            if(tractionSpeed > 1f){
                 tractionSpeed *= (1 - brakeFactor * 0.01f);
                 propulsion *= (1 - brakeFactor * 0.01f);
             }else{
-                tractionSpeed += strength * thrust * 6 * (acceleration);
-                propulsion += strength * transform.forward * thrust * 6 * (acceleration);
+                tractionSpeed += strength * thrust  * (acceleration);
+                propulsion += strength * transform.forward * thrust * (acceleration);
             }
         }
     }   
@@ -194,6 +194,7 @@ public class CarPhysics : MonoBehaviour
         if(posVec.magnitude > 10){
             tractionSpeed *= (1 - 5 * 0.01f);
             propulsion *= (1 - 5 * 0.01f);
+            //self.velocity = Vector3.Lerp(self.velocity, Vector3.Project(self.velocity, posVec), 0.1f);
         }
 
         Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight / Mathf.Pow(posVec.magnitude, MainController.current.gravityExponent);
@@ -248,6 +249,9 @@ public class CarPhysics : MonoBehaviour
 
         deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction * tempTraction) * (Time.fixedDeltaTime) * 0.1f;
         //Debug.Log(propulsion.magnitude + " " + deltaPosition);
+        if(Vector3.Dot(deltaPosition, posVec)>0){
+            deltaPosition = Vector3.ProjectOnPlane(deltaPosition, posVec);
+        }
 
         turning = false;
         tempTraction = 1;
