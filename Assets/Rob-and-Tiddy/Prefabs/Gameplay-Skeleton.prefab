@@ -813,7 +813,7 @@ MonoBehaviour:
   averageCarWeight: 1
   airResistance: 0.9605
   checkWayPointsPerFrame: 5
-  markClosestWaypoints: 1
+  markClosestWaypoints: 0
 --- !u!1 &4336530978781034436
 GameObject:
   m_ObjectHideFlags: 0

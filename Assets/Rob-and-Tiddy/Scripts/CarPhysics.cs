@@ -13,6 +13,10 @@ public class CarPhysics : MonoBehaviour
     private float topSpeed = 200f;
 
     [SerializeField]
+    [Range(0,100f)]
+    private float acceleration = 50f;
+
+    [SerializeField]
     [Range(0, 10f)]
     private float turnStrength = 5;
 
