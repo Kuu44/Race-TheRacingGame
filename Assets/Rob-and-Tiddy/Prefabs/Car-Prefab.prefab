@@ -9755,11 +9755,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCar: 0
-  topSpeed: 400
+  aerodynamic: 81
   acceleration: 50
   turnStrength: 10
   traction: 1
   orientStrength: 3
+  brakeFactor: 3
   thrusters:
   - {fileID: 675363859722669153}
   - {fileID: 7234577135389780163}

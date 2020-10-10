@@ -9,7 +9,7 @@ public class CarPhysics : MonoBehaviour
 
 
     [SerializeField]
-    [Range(0, 100f)]
+    [Range(10, 100f)]
     private float aerodynamic = 50f;
 
     [SerializeField]
@@ -118,7 +118,7 @@ public class CarPhysics : MonoBehaviour
 
         if(strength < -0.01f){
             if(tractionSpeed > 0){
-                tractionSpeed *= (1 - brakeFactor * 0.02f);
+                tractionSpeed *= (1 - brakeFactor * 0.01f);
             }else{
                 tractionSpeed += strength * thrust * 6 * (acceleration);
             }
@@ -214,7 +214,7 @@ public class CarPhysics : MonoBehaviour
         //tractionSpeed *= MainController.current.airResistance;
         //propulsion *= MainController.current.airResistance;
 
-        dragFactor = 1 - tractionSpeed * tractionSpeed * acceleration / (100000000.0f);
+        dragFactor = 1 - tractionSpeed * tractionSpeed * acceleration / (aerodynamic * 6000000.0f);
         //dragFactor = 1;
         if(dragFactor < 0) dragFactor = 0;
         tractionSpeed *= dragFactor;
