@@ -104,8 +104,8 @@ public class CarPhysics : MonoBehaviour
 
     public void AccelerateForward(float strength){
         if(strength > 0.01f){
-            tractionSpeed += strength * thrust * 3 * acceleration;
-            propulsion += strength * transform.forward * thrust * 0.06f * acceleration * aerodynamic;
+            tractionSpeed += strength * thrust * 2 * acceleration;
+            propulsion += strength * transform.forward * thrust * 2 * acceleration;
             if(thrust > 0.5f){
                 StartThrusters();
             }else{
