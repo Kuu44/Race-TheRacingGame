@@ -120,7 +120,7 @@ public class CarPhysics : MonoBehaviour
             if(tractionSpeed > 0){
                 tractionSpeed *= (1 - brakeFactor * 0.02f);
             }else{
-                tractionSpeed += strength * thrust * 500 * (acceleration/topSpeed);
+                tractionSpeed += strength * thrust * 6 * (acceleration);
             }
         }
     }   
