@@ -136,16 +136,10 @@ public class CarPhysics : MonoBehaviour
     float tempTraction = 1;
     float tempFriction = 0;
     public void hardBrake(){
-        hardbraking = true;
-        tempTraction = traction;
-        traction = 0;
-        tempFriction *= 0.5f;
+        tempTraction = 0;
+        tractionSpeed *= (1 - brakeFactor * 0.005f);
     }
 
-    public void releaseHardBrake(){
-        hardbraking = false;
-        tempFriction = MainController.current.kineticFriction;
-    }
 
     bool turning;
 
@@ -170,18 +164,12 @@ public class CarPhysics : MonoBehaviour
             SceneObjects.current.wayPointMarker.transform.position = wayPointAhead;
             SceneObjects.current.wayPointMarkerBehind.transform.position = wayPointBehind;
         }
-
-        if(!hardbraking){
-            tempFriction = MainController.current.kineticFriction;
-        }
-        
         
         Vector3 lineDirection = (wayPointAhead - wayPointBehind).normalized;
         
         
         Vector3 closestPointOnTrack = wayPointBehind + lineDirection * Vector3.Dot(lineDirection, transform.position - wayPointBehind);
         Vector3 posVec = closestPointOnTrack - transform.position;
-
 
 
         Vector3 normalVec = -posVec.normalized;
@@ -233,12 +221,15 @@ public class CarPhysics : MonoBehaviour
             propulsion *= 0.99f;
         }
 
+        
 
-        deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction) * (Time.fixedDeltaTime) * 0.1f;
+
+
+        deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction * tempTraction) * (Time.fixedDeltaTime) * 0.1f;
         Debug.Log(propulsion + " " + deltaPosition);
 
         turning = false;
-        hardbraking = false;
+        tempTraction = 1;
 
         transform.position += deltaPosition;
 

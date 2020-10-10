@@ -40,12 +40,8 @@ public class CarController : MonoBehaviour
         carPhysics.AccelerateForward(inputY * Time.fixedDeltaTime);
         carPhysics.AddUpwardsTorque(inputX * Time.fixedDeltaTime);
 
-        if(Input.GetKeyDown("space")){
+        if(Input.GetKey("space")){
             carPhysics.hardBrake();
-        }
-
-        if(Input.GetKeyUp("space")){
-            carPhysics.releaseHardBrake();
         }
     }
 }
