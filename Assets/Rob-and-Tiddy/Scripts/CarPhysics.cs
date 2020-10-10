@@ -31,14 +31,14 @@ public class CarPhysics : MonoBehaviour
 
     float thrust = 1;
     public List<ParticleSystem> thrusters;
+    public List<Transform> tyres;
+    public List<Transform> tyreSuspensions;
     Rigidbody self;
     float tractionSpeed;
     Vector3 deltaPosition = Vector3.zero;
     Vector3 propulsion;
     int wayPointAheadIndex;
     int wayPointBehindIndex;
-
-    bool hardbraking = false;
 
     int wayPointAheadI{
         get{
@@ -56,9 +56,11 @@ public class CarPhysics : MonoBehaviour
         }
         set{
             int tempvalue = value;
+            //Debug.Log(tempvalue + " =1= " + SceneObjects.current.trackWayPoints.Count);
             wayPointBehindIndex = tempvalue;
             wayPointBehind = SceneObjects.current.trackWayPoints[tempvalue];
             tempvalue = indexIncrement(tempvalue, 1, SceneObjects.current.trackWayPoints.Count);
+            //Debug.Log(tempvalue + " =2= " + SceneObjects.current.trackWayPoints.Count);
             wayPointAheadIndex = tempvalue;
             wayPointAhead = SceneObjects.current.trackWayPoints[tempvalue];
         }
@@ -147,7 +149,6 @@ public class CarPhysics : MonoBehaviour
     void Start()
     {
         self = transform.GetComponent<Rigidbody>();
-        wayPointAheadI = 1;
         wayPointBehindI = 0;
         tempFriction = MainController.current.kineticFriction;
     }
@@ -231,12 +232,22 @@ public class CarPhysics : MonoBehaviour
             propulsion *= 0.99f;
         }
 
+
+        if(tyres.Count > 0){
+            foreach(Transform tyre in tyres){
+                tyre.Rotate(new Vector3(tractionSpeed * 0.1f,0,0), Space.Self);
+                /*if(tyre.localEulerAngles.x > 360){
+                    tyre.localEulerAngles += new Vector3(-360, 0, 0);
+                }*/
+            }
+        }
+
         
 
 
 
         deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction * tempTraction) * (Time.fixedDeltaTime) * 0.1f;
-        Debug.Log(propulsion.magnitude + " " + deltaPosition);
+        //Debug.Log(propulsion.magnitude + " " + deltaPosition);
 
         turning = false;
         tempTraction = 1;

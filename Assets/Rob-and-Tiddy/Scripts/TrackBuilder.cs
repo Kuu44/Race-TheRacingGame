@@ -6,7 +6,7 @@ public class TrackBuilder : MonoBehaviour
 {
     public Transform trackWayPoints;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         trackWayPoints = SceneObjects.current.track.Find("WayPoints");
         for(int i = 0; i < trackWayPoints.childCount; i++){
