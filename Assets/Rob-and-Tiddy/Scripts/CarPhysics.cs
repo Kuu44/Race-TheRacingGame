@@ -189,6 +189,12 @@ public class CarPhysics : MonoBehaviour
                 }
             }
         }
+
+        if(posVec.magnitude > 10){
+            tractionSpeed *= (1 - 5 * 0.01f);
+            propulsion *= (1 - 5 * 0.01f);
+        }
+
         Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight / Mathf.Pow(posVec.magnitude, MainController.current.gravityExponent);
         
         self.AddForce(gravity*10f);

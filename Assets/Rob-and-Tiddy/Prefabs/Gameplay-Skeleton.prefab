@@ -808,12 +808,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityConstant: 0.5
-  gravityExponent: 0.8
+  gravityExponent: -0.2
   turningThrustLoss: 0.2
   averageCarWeight: 1
-  airResistance: 0.9605
+  airResistance: 0.66
+  kineticFriction: 0.1
   checkWayPointsPerFrame: 5
-  markClosestWaypoints: 0
+  markClosestWaypoints: 1
 --- !u!1 &4336530978781034436
 GameObject:
   m_ObjectHideFlags: 0
