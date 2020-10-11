@@ -106,7 +106,8 @@ public class CarPhysics : MonoBehaviour
 
     public void AccelerateForward(float strength){
         if(strength > 0.01f){
-            tractionSpeed += strength * thrust * 2 * acceleration;
+            //tractionSpeed += strength * thrust * 2 * acceleration;
+            propulsion = Vector3.ProjectOnPlane(propulsion, transform.up);
             propulsion += strength * transform.forward * thrust * 2 * acceleration;
             if(thrust > 0.5f){
                 StartThrusters();
@@ -120,10 +121,10 @@ public class CarPhysics : MonoBehaviour
 
         if(strength < -0.01f){
             if(tractionSpeed > 1f){
-                tractionSpeed *= (1 - brakeFactor * 0.01f);
+                //tractionSpeed *= (1 - brakeFactor * 0.01f);
                 propulsion *= (1 - brakeFactor * 0.01f);
             }else{
-                tractionSpeed += strength * thrust  * (acceleration);
+                //tractionSpeed += strength * thrust  * (acceleration);
                 propulsion += strength * transform.forward * thrust * (acceleration);
             }
         }
@@ -141,16 +142,22 @@ public class CarPhysics : MonoBehaviour
     float tempFriction = 0;
     public void hardBrake(){
         tempTraction = 0;
-        tractionSpeed *= (1 - brakeFactor * 0.005f);
+        //tractionSpeed *= (1 - brakeFactor * 0.005f);
         propulsion *= (1 - brakeFactor * 0.005f);
     }
     bool turning;
+    float tractionAccountedAngleOffset = 0;
+
+    float currentYangle;
+    float prevYangle;
 
     void Start()
     {
         self = transform.GetComponent<Rigidbody>();
         wayPointBehindI = 0;
         tempFriction = MainController.current.kineticFriction;
+        currentYangle = transform.localEulerAngles.y;
+        prevYangle = transform.localEulerAngles.y;
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -178,7 +185,10 @@ public class CarPhysics : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, posVec, out hit, 10)){
             if(hit.collider.tag == "Track"){
-                normalVec = hit.normal;
+                if(hit.distance < 2){
+                    normalVec = hit.normal;
+                }
+
                 posVec = -hit.normal *(hit.distance + 1f);
                 if(hit.distance < 1){
                     thrust = 1;
@@ -192,7 +202,7 @@ public class CarPhysics : MonoBehaviour
         }
 
         if(posVec.magnitude > 10){
-            tractionSpeed *= (1 - 5 * 0.01f);
+            //tractionSpeed *= (1 - 5 * 0.01f);
             propulsion *= (1 - 5 * 0.01f);
             //self.velocity = Vector3.Lerp(self.velocity, Vector3.Project(self.velocity, posVec), 0.1f);
         }
@@ -205,27 +215,27 @@ public class CarPhysics : MonoBehaviour
         self.AddTorque(orientVec*orientStrength);
 
         //if(Time.frameCount % 10 == 0){
-            UIController.current.speed = (int)(tractionSpeed);
+
         //}
             
         //tractionSpeed *= MainController.current.airResistance;
         //propulsion *= MainController.current.airResistance;
 
-        dragFactor = 1 - tractionSpeed * tractionSpeed * acceleration / (aerodynamic * 6000000.0f);
+        /*dragFactor = 1 - tractionSpeed * tractionSpeed * acceleration / (aerodynamic * 6000000.0f);
         //dragFactor = 1;
         if(dragFactor < 0) dragFactor = 0;
-        tractionSpeed *= dragFactor;
+        tractionSpeed *= dragFactor;*/
 
         dragFactor = 1 - propulsion.magnitude * propulsion.magnitude * acceleration / (aerodynamic * 6000000.0f);
         if(dragFactor < 0) dragFactor = 0;
         propulsion *= dragFactor;
 
         //kinetic friction
-        if(tractionSpeed > 1){
+        /*if(tractionSpeed > 1){
             tractionSpeed -= Mathf.Sign(tractionSpeed) * tempFriction * acceleration * 0.01f;
         }else{
             tractionSpeed *= 0.99f;
-        }
+        }*/
 
         if(propulsion.magnitude > 1){
             propulsion -= propulsion.normalized * tempFriction * acceleration * 0.01f;
@@ -234,21 +244,31 @@ public class CarPhysics : MonoBehaviour
         }
 
 
+
+
+        
+        //vector = Quaternion.AngleAxis(-45, Vector3.up) * vector;
+
+        //deltaPosition = tractionSpeed * Vector3.Slerp(Quaternion.AngleAxis(tractionAccountedAngleOffset, transform.up) * transform.forward, transform.forward, traction * tempTraction) * (Time.fixedDeltaTime) * 0.1f;
+        //Debug.Log(propulsion.magnitude + " " + deltaPosition);
+        tempTraction = traction / 10f;
+        if(tempTraction >= 0.09f){
+            tempTraction = 1.0f;
+        }
+        propulsion = Vector3.Lerp(propulsion, transform.forward * propulsion.magnitude, tempTraction);
+
         if(tyres.Count > 0){
             foreach(Transform tyre in tyres){
-                tyre.Rotate(new Vector3(tractionSpeed * 0.1f,0,0), Space.Self);
+                tyre.Rotate(new Vector3(propulsion.magnitude * 0.1f,0,0), Space.Self);
                 /*if(tyre.localEulerAngles.x > 360){
                     tyre.localEulerAngles += new Vector3(-360, 0, 0);
                 }*/
             }
         }
 
+        UIController.current.speed = (int)(propulsion.magnitude);
         
-
-
-
-        deltaPosition = Vector3.Slerp(propulsion, transform.forward * tractionSpeed, traction * tempTraction) * (Time.fixedDeltaTime) * 0.1f;
-        //Debug.Log(propulsion.magnitude + " " + deltaPosition);
+        deltaPosition = propulsion * (Time.fixedDeltaTime) * 0.1f;
         if(Vector3.Dot(deltaPosition, posVec)>0){
             deltaPosition = Vector3.ProjectOnPlane(deltaPosition, posVec);
         }
