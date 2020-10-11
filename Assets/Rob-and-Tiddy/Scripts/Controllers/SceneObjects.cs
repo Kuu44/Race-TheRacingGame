@@ -32,7 +32,6 @@ public class SceneObjects : ControllerBase<SceneObjects>
     public List<GameObject> cars = new List<GameObject>();
     public Transform track;
 
-    [HideInInspector]
     public GameObject trackDirector;
 
     public List<Vector3> trackWayPoints = new List<Vector3>();
