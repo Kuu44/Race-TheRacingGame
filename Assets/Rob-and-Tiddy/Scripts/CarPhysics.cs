@@ -187,9 +187,14 @@ public class CarPhysics : MonoBehaviour
             if(hit.collider.tag == "Track"){
                 if(hit.distance < 2){
                     normalVec = hit.normal;
+                    posVec = -hit.normal *(hit.distance + 1f);
+                }else{
+                    self.velocity = Vector3.Lerp(self.velocity, Vector3.Project(self.velocity, posVec), 0.1f);
+                    propulsion *= 0.95f;
+                    posVec = -hit.normal *(hit.distance + 1f);
                 }
 
-                posVec = -hit.normal *(hit.distance + 1f);
+                
                 if(hit.distance < 1){
                     thrust = 1;
                 }else{
