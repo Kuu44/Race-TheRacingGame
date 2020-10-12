@@ -46,4 +46,5 @@ public class JkNetworkManager : NetworkManager
         //destroys the cube
         base.OnServerDisconnect(conn);
     }
+    
 }

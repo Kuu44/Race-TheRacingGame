@@ -14,15 +14,17 @@ public class Movement : NetworkBehaviour
     Color cubeColor;
     Material mat;
 
+    float inputX, inputY;
+
     // Update is called once per frame
     void Update()
     {
         mat.color = cubeColor;
 
-        float inputX = Input.GetAxisRaw("Horizontal");
-        float inputY = Input.GetAxisRaw("Vertical");
+        inputX = Input.GetAxisRaw("Horizontal");
+        inputY = Input.GetAxisRaw("Vertical");
         if (isLocalPlayer)
-            transform.Translate(inputX * speed * Time.deltaTime, inputY * speed * Time.deltaTime, 0,Space.World);
+            CmdMove();
     }
     public override void OnStartClient()
     {
@@ -33,5 +35,16 @@ public class Movement : NetworkBehaviour
     public void SetColor(Color color)
     {
         cubeColor = color;
+    }
+    [Command]
+    private void CmdMove()
+    {
+        // Validate Logic
+        RpcMove();
+    }
+    [ClientRpc]
+    private void RpcMove()
+    {
+        transform.Translate(inputX * speed, inputY * speed, 0, Space.World);
     }
 }
