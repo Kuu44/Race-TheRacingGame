@@ -9755,15 +9755,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCar: 0
-  aerodynamic: 81
-  acceleration: 50
+  aerodynamic: 50
+  acceleration: 74
   turnStrength: 10
-  traction: 1
+  Traction: 1
   orientStrength: 3
   brakeFactor: 3
   thrusters:
   - {fileID: 675363859722669153}
   - {fileID: 7234577135389780163}
+  tyres: []
+  tyreSuspensions: []
 --- !u!135 &7462978233502958456
 SphereCollider:
   m_ObjectHideFlags: 0

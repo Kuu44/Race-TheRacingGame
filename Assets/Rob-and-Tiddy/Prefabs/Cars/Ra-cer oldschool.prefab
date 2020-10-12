@@ -5328,7 +5328,7 @@ MonoBehaviour:
   aerodynamic: 50
   acceleration: 66
   turnStrength: 8.8
-  traction: 1
+  Traction: 1
   orientStrength: 3
   brakeFactor: 3
   thrusters:
