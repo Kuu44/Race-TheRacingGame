@@ -58,7 +58,7 @@ public class UIController : ControllerBase<UIController>
     }
 
     public void addLapTime(lapTime newLapTime){
-        for(int i = lapTimes.Length-1; i >= 0; i--){
+        for(int i = lapTimes.Length-1; i > 0; i--){
             lapTimes[i].text = lapTimes[i-1].text;
         }
         lapTimes[0].text = newLapTime.lapTimeAsString();
@@ -138,11 +138,11 @@ public struct lapTime{
         return a.toSeconds() <= b.toSeconds();
     }
 
-    public static bool operator == (lapTime a, lapTime b){     
+    /*public static bool operator == (lapTime a, lapTime b){     
         return a.toSeconds() == b.toSeconds();
     }
 
     public static bool operator != (lapTime a, lapTime b){     
         return a.toSeconds() != b.toSeconds();
-    }
+    }*/
 }

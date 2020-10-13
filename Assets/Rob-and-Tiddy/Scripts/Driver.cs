@@ -38,8 +38,8 @@ public class Driver : MonoBehaviour
         }
 
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
-
         carPhysics = car.GetComponent<CarPhysics>();
+        carPhysics.driver = this;
     }
 
     public void switchCar(int carIndex){
@@ -48,6 +48,13 @@ public class Driver : MonoBehaviour
         }
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
         carPhysics = car.GetComponent<CarPhysics>();
+        carPhysics.driver = this;
+    }
+
+    void onDestroy(){
+        if(car != null){
+            Destroy(car);
+        }
     }
 
     void Awake()

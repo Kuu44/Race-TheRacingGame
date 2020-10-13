@@ -12,6 +12,9 @@ public class SceneObjects : ControllerBase<SceneObjects>
         for(int i = 0; i < track.Find("GridPositions").childCount; i++){
             gridPositions.Add(track.Find("GridPositions").GetChild(i));
         }
+        for(int i = 0; i < track.Find("TrackWaypoints").childCount; i++){
+            trackWayPoints.Add(track.Find("TrackWaypoints").GetChild(i));
+        }
         
         carCam = Camera.main;
 
@@ -35,7 +38,9 @@ public class SceneObjects : ControllerBase<SceneObjects>
 
     public GameObject driverPrefab;
     public Transform track;
-    public List<Vector3> trackEnvelops = new List<Vector3>();
+    //public List<Vector3> trackEnvelops = new List<Vector3>();
+
+    public List<Transform> trackWayPoints;
     public List<Transform> gridPositions = new List<Transform>();
     public CarController carController;
 

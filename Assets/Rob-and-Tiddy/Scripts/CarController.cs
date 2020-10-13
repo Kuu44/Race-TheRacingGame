@@ -29,9 +29,41 @@ public class CarController : MonoBehaviour
         }
     }
 
+    public void onPassFlag(){
+        //print("The main car just passed the chequered Flag!");
+        if(numErrors() <= 2){
+            //print("Lap completed successfully!");
+            UIController.current.addLapTime(new lapTime(currentLapTime));
+            currentLapTime = 0;
+        }else{
+            print("Invalid lab, you probably cut corners or something");
+            currentLapTime = 0;
+        }
+        wayPointsPassed.Clear();
+    }
+
+
+    int numErrors(){
+        int result = SceneObjects.current.trackWayPoints.Count - wayPointsPassed.Count;
+        if(result < 0) result = 0;
+
+        for(int i = 0; i < wayPointsPassed.Count; i++){
+            if(wayPointsPassed[i] != SceneObjects.current.trackWayPoints[i]){
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+
+    public List<Transform> wayPointsPassed = new List<Transform>();
+
     void Update(){
          if(SceneObjects.current.ActiveDriver){
-           
+            
+
+
             currentLapTime += Time.deltaTime;
             if(Time.frameCount % 10 == 0){
                 UIController.current.setCurrentLapTime(currentLapTime);

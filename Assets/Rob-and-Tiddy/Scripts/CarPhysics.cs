@@ -1,9 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CarPhysics : MonoBehaviour
 {
+    //public event Action OnExitFlag;
+    public Driver driver;
+    void OnTriggerExit(Collider other){
+        if(other.tag == "ChequeredFlag"){
+           // Debug.Log("flag collider detected");            
+            /*if(OnExitFlag != null){
+                OnExitFlag();
+            }*/
+            if(driver != null){
+                //print("Car: My driver is still here");
+                if(driver.active){
+                  SceneObjects.current.carController.onPassFlag();
+                }
+            }
+        }
+
+        if(other.tag == "WayPoint"){
+           // Debug.Log("flag collider detected");            
+            /*if(OnExitFlag != null){
+                OnExitFlag();
+            }*/
+            if(driver != null){
+                //print("Car: My driver is still here");
+                if(driver.active){
+                  SceneObjects.current.carController.wayPointsPassed.Add(other.transform);
+                }
+            }
+        }
+
+
+    }
 
     public bool mainCar;
 
