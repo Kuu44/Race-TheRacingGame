@@ -26,12 +26,8 @@ public class SceneObjects : ControllerBase<SceneObjects>
             return activeDriver;
         }set{
             activeDriver = value;
-            ActiveCar = value.car;
-            carController.carPhysics = value.car.GetComponent<CarPhysics>();
         }
     }
-
-    public GameObject ActiveCar;
     public List<GameObject> carPrefabs;
     public List<GameObject> cars = new List<GameObject>();
 

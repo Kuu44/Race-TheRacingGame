@@ -22,11 +22,11 @@ public class CarCamera : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(SceneObjects.current.ActiveCar != null){
+        if(SceneObjects.current.ActiveDriver != null){
 
-                Vector3 carPos = SceneObjects.current.ActiveCar.transform.position;
-                Vector3 carBack = -SceneObjects.current.ActiveCar.transform.forward;
-                Vector3 carUp = SceneObjects.current.ActiveCar.transform.up;
+                Vector3 carPos = SceneObjects.current.ActiveDriver.car.transform.position;
+                Vector3 carBack = -SceneObjects.current.ActiveDriver.car.transform.forward;
+                Vector3 carUp = SceneObjects.current.ActiveDriver.car.transform.up;
                 Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
                 Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 

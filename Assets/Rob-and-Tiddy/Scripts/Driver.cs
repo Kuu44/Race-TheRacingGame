@@ -20,6 +20,7 @@ public class Driver : MonoBehaviour
     
     public string driverName = "DriverMcDriveFace";
     public GameObject car;
+    public CarPhysics carPhysics;
 
 /*
     public lapTime fastestQualifyLap;
@@ -29,13 +30,16 @@ public class Driver : MonoBehaviour
 
     public int starterRank = 0;
     // Start is called before the first frame update
-    int tempCarIndex = 0;
+    public int tempCarIndex = 0;
 
     public void selectCar(int carIndex){
         if(car != null){
             Destroy(car);
         }
+
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
+
+        carPhysics = car.GetComponent<CarPhysics>();
     }
 
     public void switchCar(int carIndex){
@@ -43,10 +47,7 @@ public class Driver : MonoBehaviour
             Destroy(car);
         }
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
-        if(Active){
-            SceneObjects.current.ActiveCar = car;
-            SceneObjects.current.carController.carPhysics = car.GetComponent<CarPhysics>();
-        }
+        carPhysics = car.GetComponent<CarPhysics>();
     }
 
     void Awake()
@@ -59,18 +60,5 @@ public class Driver : MonoBehaviour
     void Update()
     {
         //TEMPCODE
-        if(active){
-            currentLapTime += Time.deltaTime;
-            if(Time.frameCount % 10 == 0){
-                UIController.current.setCurrentLapTime(currentLapTime);
-            }
-            if(Input.GetKeyDown("n")){
-                tempCarIndex += 1;
-                if(tempCarIndex >= SceneObjects.current.carPrefabs.Count){
-                    tempCarIndex = 0;
-                }
-                switchCar(tempCarIndex);
-            }
-        }
     }
 }
