@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Driver : MonoBehaviour
 {
-    
+    public bool qualified = false;
     bool Active = false;
     public bool active{
         get{
@@ -43,12 +43,19 @@ public class Driver : MonoBehaviour
     }
 
     public void switchCar(int carIndex){
+        UIController.current.showMessage("You have switched to a different car", 1);
         if(car != null){
             Destroy(car);
         }
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
         carPhysics = car.GetComponent<CarPhysics>();
         carPhysics.driver = this;
+    }
+
+    public void backToGrid(){
+        carPhysics.stopAllMovement();
+        car.transform.position = SceneObjects.current.gridPositions[starterRank].position;
+        car.transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;
     }
 
     void onDestroy(){

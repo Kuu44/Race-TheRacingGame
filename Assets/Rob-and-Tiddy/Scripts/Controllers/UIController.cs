@@ -25,8 +25,55 @@ public class UIController : ControllerBase<UIController>
         }
     }
 
-    public void showMessage(string message, float time){
+    public void showMessage(string theMessage, float time){
+        StopCoroutine("messageCoroutine");
+        message.gameObject.SetActive(true);
+        message.text = theMessage;
+        StartCoroutine(messageCoroutine(time));
 
+    }
+
+    IEnumerator messageCoroutine(float time){
+        yield return new WaitForSeconds(time);
+        message.gameObject.SetActive(false);
+    }
+
+    public void startQualifyCountDown(){
+        StartCoroutine(qualifyCountDown());
+    }
+
+    public void startRaceCountDown(){
+        StartCoroutine(raceCountDown());
+    }
+    IEnumerator qualifyCountDown(){
+        string phaseString = "Qualifying";
+        if(RaceManager.current.numberOfQualifyingLaps == 0){
+            phaseString = "Race";
+        }
+        RacePosition.gameObject.SetActive(true);
+        StatusText.text = phaseString + " starts in ";
+        RacePosition.text = "6";
+        for(int i = 0; i < 5; i++){
+            yield return new WaitForSeconds(1);
+            StatusText.text = phaseString + " starts in ";
+            RacePosition.text = (5-i).ToString();
+        }
+        yield return new WaitForSeconds(1);
+        RaceManager.current.startQualify();
+    }
+
+    IEnumerator raceCountDown(){
+        RacePosition.text = "READY!";
+        yield return new WaitForSeconds(1);
+        for(int i = 0; i < 5; i++){
+            yield return new WaitForSeconds(1);
+            RacePosition.text = (5-i).ToString();
+        }
+        yield return new WaitForSeconds(Random.Range(1.5f, 2.5f));
+        RaceManager.current.allowCarControl = true;
+        RacePosition.text = "GO!";
+        yield return new WaitForSeconds(3);
+        RacePosition.text = "";
     }
 
     public void SetPracticeUI(){
@@ -39,10 +86,16 @@ public class UIController : ControllerBase<UIController>
 
     public void SetQualifyUI(){
         StatusText.text = "Qualifying!";
+        qualificationRankings.SetActive(true);
+        clearLapTimes();
+        clearQualifyTimes();
+        RacePosition.gameObject.SetActive(false);
     }
-
     public void SetRaceUI(){
-
+        StatusText.text = "Race! Lap 1";
+        qualificationRankings.SetActive(false);
+        clearLapTimes();
+        RacePosition.gameObject.SetActive(false);
     }
 
     public void SetPostRaceUI(){
@@ -67,6 +120,18 @@ public class UIController : ControllerBase<UIController>
     public void clearLapTimes(){
         for(int i = 0; i < lapTimes.Length; i++){
             lapTimes[i].text = "";
+        }
+    }
+
+    public void clearQualifyTimes(){
+        for(int i = 0; i < qualificationRanks.Length; i++){
+            qualificationRanks[i].text = "";
+        }
+    }
+
+    public void setQualifyTimes(){
+        for(int i = 0; i < Mathf.Min(RaceManager.current.rankedQualifyLapTimeDrivers.Count, qualificationRanks.Length); i++){
+            qualificationRanks[i].text = RaceManager.current.rankedQualifyLapTimeDrivers[i] + "   " + new lapTime(RaceManager.current.rankedQualifyLapTimes[i]).lapTimeAsString();
         }
     }
 

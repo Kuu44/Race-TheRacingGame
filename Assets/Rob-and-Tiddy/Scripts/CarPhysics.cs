@@ -115,6 +115,12 @@ public class CarPhysics : MonoBehaviour
             turning = true;
         }
     }
+
+    public void stopAllMovement(){
+        self.velocity = Vector3.zero;
+        propulsion = Vector3.zero;
+        self.angularVelocity = Vector3.zero;
+    }
     float tempTraction = 1;
     float tempFriction = 0;
     public void hardBrake(){
