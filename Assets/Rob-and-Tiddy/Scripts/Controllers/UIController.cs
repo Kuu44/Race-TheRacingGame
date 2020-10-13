@@ -38,7 +38,7 @@ public class UIController : ControllerBase<UIController>
     }
 
     public void SetQualifyUI(){
-
+        StatusText.text = "Qualifying!";
     }
 
     public void SetRaceUI(){

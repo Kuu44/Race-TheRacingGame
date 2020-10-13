@@ -16,7 +16,7 @@ public class CarPhysics : MonoBehaviour
             if(driver != null){
                 //print("Car: My driver is still here");
                 if(driver.active){
-                  SceneObjects.current.carController.onPassFlag();
+                  CarController.current.onPassFlag();
                 }
             }
         }
@@ -29,7 +29,7 @@ public class CarPhysics : MonoBehaviour
             if(driver != null){
                 //print("Car: My driver is still here");
                 if(driver.active){
-                  SceneObjects.current.carController.wayPointsPassed.Add(other.transform);
+                  CarController.current.wayPointsPassed.Add(other.transform);
                 }
             }
         }

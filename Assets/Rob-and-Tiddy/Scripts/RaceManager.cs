@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaceManager : MonoBehaviour
+public class RaceManager : ControllerBase<RaceManager>
 {
     // Start is called before the first frame update
 
@@ -18,7 +18,9 @@ public class RaceManager : MonoBehaviour
     public enum GameStatus {Practice, Qualify, Race, Victory};
     GameStatus gameStatus = GameStatus.Practice;
     [HideInInspector]
-    public List<lapTime> qualifyLapTimes = new List<lapTime>();
+    public List<float> allQualifyLapTimes = new List<float>();
+    [HideInInspector]
+    public List<float> rankedQualifyLapTimes = new List<float>();
     [HideInInspector]
     public List<lapTime> raceLapTimes = new List<lapTime>();
     [HideInInspector]
@@ -28,6 +30,7 @@ public class RaceManager : MonoBehaviour
 
     public void startQualify(){
         gameStatus = GameStatus.Qualify;
+        UIController.current.SetQualifyUI();
     }
 
     public void startRace(){

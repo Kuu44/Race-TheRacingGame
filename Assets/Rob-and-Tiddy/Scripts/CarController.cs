@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-public class CarController : MonoBehaviour
+public class CarController : ControllerBase<CarController>
 {
     // Update is called once per frame
     float currentLapTime = 0;
@@ -75,6 +75,10 @@ public class CarController : MonoBehaviour
                     SceneObjects.current.ActiveDriver.tempCarIndex = 0;
                 }
                 SceneObjects.current.ActiveDriver.switchCar(SceneObjects.current.ActiveDriver.tempCarIndex);
+            }
+            if(Input.GetKeyUp("m")){
+                //print("N KEY PRESSED");
+                RaceManager.current.startQualify();
             }
         }
     }

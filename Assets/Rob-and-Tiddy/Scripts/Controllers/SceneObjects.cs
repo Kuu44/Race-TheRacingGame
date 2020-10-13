@@ -44,4 +44,6 @@ public class SceneObjects : ControllerBase<SceneObjects>
     public List<Transform> gridPositions = new List<Transform>();
     public CarController carController;
 
+    public RaceManager raceManager;
+
 }
