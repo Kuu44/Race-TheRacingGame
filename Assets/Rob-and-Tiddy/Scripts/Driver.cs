@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class Driver : MonoBehaviour
 {
-    public enum Phase {Practicing, Qualifying, Racing, PostRace};
+    public enum Phase {Practicing, Qualifying, Qualified, Racing, PostRace};
 
     public Phase phase = Phase.Practicing;
-    public bool qualified = false;
-    public bool raceFinished = false;
-
-    public int raceLap = 0;
+    int currentRaceLap = 0;
+    int currentQualifyingLap = 0;
+    bool preQualifyingLap = false;
     bool Active = false;
     public bool active{
         get{
@@ -23,20 +22,13 @@ public class Driver : MonoBehaviour
             }
         }
     }
-    
     public string driverName = "DriverMcDriveyFace";
     public GameObject car;
     public CarPhysics carPhysics;
-
-/*
-    public lapTime fastestQualifyLap;
-    public lapTime fastestRaceLap;*/
-
-    public float currentLapTime = 0;
-
+    float currentLapTime = 0;
     public int starterRank = 0;
-    // Start is called before the first frame update
     public int tempCarIndex = 0;
+    public List<Transform> wayPointsPassed = new List<Transform>();
 
     public void selectCar(int carIndex){
         if(car != null){
@@ -59,10 +51,89 @@ public class Driver : MonoBehaviour
     }
 
     public void backToGrid(){
-        CarController.current.resetController();
+        wayPointsPassed.Clear();
         carPhysics.stopAllMovement();
         car.transform.position = SceneObjects.current.gridPositions[starterRank].position;
         car.transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;
+    }
+
+    int numErrors(){
+        int result = SceneObjects.current.trackWayPoints.Count - wayPointsPassed.Count;
+        if(result < 0) result = 0;
+
+        for(int i = 0; i < Mathf.Min(wayPointsPassed.Count, SceneObjects.current.trackWayPoints.Count); i++){
+            if(wayPointsPassed[i] != SceneObjects.current.trackWayPoints[i]){
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public void onPassFlag(){
+        //print("The main car just passed the chequered Flag!");
+        if(numErrors() <= 2){
+            //print("Lap completed successfully!");
+            if(active){
+                UIController.current.addLapTime(new lapTime(currentLapTime));
+                UIController.current.showMessage("Your last lap time was " + new lapTime(currentLapTime).lapTimeAsString(), 3);
+            }
+            if(phase == Phase.Qualifying){
+                //RaceManager.current.addQualifyLapTime(currentLapTime, driverName);
+                if(preQualifyingLap && currentQualifyingLap < RaceManager.current.numberOfQualifyingLaps){
+     
+                    currentQualifyingLap+=1;
+                    if(active)
+                        UIController.current.StatusText.text = "Qualifying! (Lap "+ (currentQualifyingLap+1).ToString()+")";
+                    if(currentQualifyingLap >= RaceManager.current.numberOfQualifyingLaps){
+                        phase = Phase.Qualified;
+                        if(active)
+                            UIController.current.StatusText.text = "Waiting";
+                    }
+                    RaceManager.current.addQualifyLapTime(currentLapTime, driverName);
+                }else{
+                    preQualifyingLap = true;
+                    if(active){
+                        UIController.current.StatusText.text = "Qualifying! (Lap 1)";
+                        UIController.current.showMessage("Good luck! This lap will be counted", 5);
+                    }
+                }
+            
+            }else
+
+            if(phase == Phase.Racing){
+                
+                currentRaceLap +=1;
+                if(currentRaceLap >= RaceManager.current.numberOfRaceLaps){
+                    phase = Phase.PostRace;
+                    RaceManager.current.addRaceFinishEntry(SceneObjects.current.ActiveDriver);
+                }else{
+                //RaceManager.current.progressLap(SceneObjects.current.ActiveDriver);
+                    if(active)
+                        UIController.current.StatusText.text = "Race! - Lap " + (currentRaceLap + 1).ToString();
+                }
+            }
+            
+            
+            currentLapTime = 0;
+        }else{
+            //print("Invalid lab, you probably cut corners or something");
+            if(wayPointsPassed.Count > 0){
+                if(active)
+                    UIController.current.showMessage("Invalid lap, you might have missed a corner or something", 5);
+                if(RaceManager.current.gameStatus == RaceManager.GameStatus.Qualify){;
+                    if(preQualifyingLap){
+                    }else{
+                        preQualifyingLap = true;
+                        if(active)
+                            UIController.current.showMessage("Good luck! This lap will be counted", 5);
+                    }
+                
+                }
+            }
+            
+            currentLapTime = 0;
+        }
+        wayPointsPassed.Clear();
     }
 
     void onDestroy(){

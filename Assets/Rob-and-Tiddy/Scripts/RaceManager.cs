@@ -76,13 +76,14 @@ public class RaceManager : ControllerBase<RaceManager>
     void checkQualified(){
         bool QualifyingDone = true;
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            if(SceneObjects.current.drivers[i].qualified == false){
+            if(SceneObjects.current.drivers[i].phase == Driver.Phase.Qualified){
                 QualifyingDone = false;
                 break;
             }
         }
         if(QualifyingDone){
             for(int j = 0; j < SceneObjects.current.drivers.Count; j++){
+                SceneObjects.current.drivers[j].phase = Driver.Phase.Racing;
                 for(int i = 0; i < rankedQualifyLapTimeDrivers.Count; i++){
                     if(rankedQualifyLapTimeDrivers[i] == SceneObjects.current.drivers[j].driverName){
                         SceneObjects.current.drivers[j].starterRank = i;
@@ -100,7 +101,9 @@ public class RaceManager : ControllerBase<RaceManager>
     public void startQualify(){
         if(numberOfQualifyingLaps > 0){
             UIController.current.startQualifyCountDown();
-
+            for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
+                SceneObjects.current.drivers[i].phase = Driver.Phase.Qualifying;
+            }
         }else{
             List<int> nums = new List<int>();
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
@@ -109,6 +112,7 @@ public class RaceManager : ControllerBase<RaceManager>
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
                 int n = Random.Range(0, nums.Count);
                 SceneObjects.current.drivers[i].starterRank = nums[n]+1;
+                SceneObjects.current.drivers[i].phase = Driver.Phase.Racing;
                 nums.RemoveAt(n);
             }
             UIController.current.StatusText.text = "Preparing Race";
