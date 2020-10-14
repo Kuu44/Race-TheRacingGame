@@ -165,7 +165,7 @@ public class UIController : ControllerBase<UIController>
             raceRankings.SetActive(true);
         }
         for(int i = 0; i < Mathf.Min(RaceManager.current.rankedQualifyLapTimeDrivers.Count, qualificationRanks.Length); i++){
-            raceRanks[i].text = i.ToString() + ". "+RaceManager.current.raceFinishers[i].driverName;
+            raceRanks[i].text = (i+1).ToString() + ". "+RaceManager.current.raceFinishers[i].driverName;
         }
     }
 

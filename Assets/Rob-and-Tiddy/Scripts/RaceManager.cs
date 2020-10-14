@@ -76,7 +76,7 @@ public class RaceManager : ControllerBase<RaceManager>
     void checkQualified(){
         bool QualifyingDone = true;
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            if(SceneObjects.current.drivers[i].phase == Driver.Phase.Qualified){
+            if(SceneObjects.current.drivers[i].phase == Driver.Phase.Qualifying){
                 QualifyingDone = false;
                 break;
             }
