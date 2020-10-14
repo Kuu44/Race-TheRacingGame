@@ -151,6 +151,13 @@ public class Driver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(active){
+            if(Time.frameCount % 10 == 0){
+                UIController.current.setCurrentLapTime(currentLapTime);
+            }
+        }
+
+        currentLapTime += Time.deltaTime;
         //TEMPCODE
     }
 }

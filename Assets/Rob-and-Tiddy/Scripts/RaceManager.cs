@@ -150,6 +150,7 @@ public class RaceManager : ControllerBase<RaceManager>
             driverScript.driverName = driverName;
             driverScript.starterRank = SceneObjects.current.drivers.Count;
             SceneObjects.current.drivers.Add(driverScript);
+            UIController.current.setDriverTags();
             return driverScript;
         }
     }
@@ -159,6 +160,7 @@ public class RaceManager : ControllerBase<RaceManager>
         SceneObjects.current.cars.Remove(driver.car);
         Destroy(driver.car);
         Destroy(driver.gameObject);
+        UIController.current.setDriverTags();
     }
 
 

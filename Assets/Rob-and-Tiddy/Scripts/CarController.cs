@@ -7,9 +7,6 @@ using UnityEngine;
 public class CarController : ControllerBase<CarController>
 {
     // Update is called once per frame
-    float currentLapTime = 0;
-    int numQualifyingLaps = 0;
-    bool preQualifyingLap = false;
     void FixedUpdate()
     {
         if(SceneObjects.current.ActiveDriver && RaceManager.current.allowCarControl){
@@ -34,10 +31,8 @@ public class CarController : ControllerBase<CarController>
 
     void Update(){
          if(SceneObjects.current.ActiveDriver){
-            currentLapTime += Time.deltaTime;
-            if(Time.frameCount % 10 == 0){
-                UIController.current.setCurrentLapTime(currentLapTime);
-            }
+            
+            
             if(Input.GetKeyUp("n")){
                 //print("N KEY PRESSED");
                 SceneObjects.current.ActiveDriver.tempCarIndex += 1;

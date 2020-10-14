@@ -185,6 +185,21 @@ public class UIController : ControllerBase<UIController>
     public Text[] raceRanks;
     public Text currentLapTime;
 
+    public Text[] driverNameTags;
+
+    public void setDriverTags(){
+        for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
+            driverNameTags[i].text = SceneObjects.current.drivers[i].driverName;
+        }
+    }
+    void Update(){
+        for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
+            
+            Transform carTransform = SceneObjects.current.drivers[i].car.transform;
+            driverNameTags[i].rectTransform.anchoredPosition = SceneObjects.current.carCam.WorldToScreenPoint(carTransform.position + carTransform.up);
+        }
+    }
+
 }
 
 public struct lapTime{
