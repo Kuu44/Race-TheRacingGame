@@ -7,8 +7,11 @@ public class RaceManager : ControllerBase<RaceManager>
     // Start is called before the first frame update
 
     //Race settings
+    [Range(2,10)]
     public int maxNumberOfDrivers = 10;
+    [Range(0,5)]
     public int numberOfQualifyingLaps = 2;
+    [Range(1,50)]
     public int numberOfRaceLaps = 15;
     public bool allowFuel = true;
 
@@ -17,6 +20,8 @@ public class RaceManager : ControllerBase<RaceManager>
 
     [HideInInspector]
     public enum GameStatus {Practice, Qualify, Race, Victory};
+    [HideInInspector]
+
     public GameStatus gameStatus = GameStatus.Practice;
     [HideInInspector]
     public List<float> allQualifyLapTimes = new List<float>();
@@ -32,6 +37,8 @@ public class RaceManager : ControllerBase<RaceManager>
     public lapTime currentLapTime;
     [HideInInspector]
     public float currentLapTimeInSeconds;
+    [HideInInspector]
+    public List<Driver> raceFinishers = new List<Driver>();
 
     public void addQualifyLapTime(float timeInSeconds, string driverName){
         allQualifyLapTimeDrivers.Add(driverName);
@@ -68,12 +75,23 @@ public class RaceManager : ControllerBase<RaceManager>
 
     void checkQualified(){
         bool QualifyingDone = true;
-        for(int i = 1; i < SceneObjects.current.drivers.Count; i++){
+        for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
             if(SceneObjects.current.drivers[i].qualified == false){
                 QualifyingDone = false;
+                break;
             }
         }
         if(QualifyingDone){
+            for(int j = 0; j < SceneObjects.current.drivers.Count; j++){
+                for(int i = 0; i < rankedQualifyLapTimeDrivers.Count; i++){
+                    if(rankedQualifyLapTimeDrivers[i] == SceneObjects.current.drivers[j].driverName){
+                        SceneObjects.current.drivers[j].starterRank = i;
+                        break;
+                    }
+                }
+            }
+
+            UIController.current.StatusText.text = "Qualifying over!";
             startRace();
         }
     }
@@ -81,38 +99,42 @@ public class RaceManager : ControllerBase<RaceManager>
     
     public void startQualify(){
         if(numberOfQualifyingLaps > 0){
-            gameStatus = GameStatus.Qualify;
-            UIController.current.showMessage("Qualifying has begun! Try for the fastest time after this lap to be ahead at the start!", 10);
-            UIController.current.SetQualifyUI();
+            UIController.current.startQualifyCountDown();
+
         }else{
             List<int> nums = new List<int>();
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-                nums.Add(i+1);
+                nums.Add(i);
             }
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-                int n = Random.Range(1, nums.Count + 1);
-                SceneObjects.current.drivers[i].starterRank = nums[n];
+                int n = Random.Range(0, nums.Count);
+                SceneObjects.current.drivers[i].starterRank = nums[n]+1;
                 nums.RemoveAt(n);
             }
+            UIController.current.StatusText.text = "Preparing Race";
             startRace();
         }
     }
 
     public void startRace(){
-        allowCarControl = false;
-        gameStatus = GameStatus.Race;
+      
         UIController.current.showMessage("The race is about to begin! Good luck!", 5);
-        for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            SceneObjects.current.drivers[i].backToGrid();
-        }
-        UIController.current.SetRaceUI();
+        
         UIController.current.startRaceCountDown();
     }
 
+    public void addRaceFinishEntry(Driver driver){
+        raceFinishers.Add(driver);
+        UIController.current.setRaceTimes();
+        if(raceFinishers.Count == SceneObjects.current.drivers.Count){
+            finishRace();
+        }
+    }
     
 
     public void finishRace(){
         gameStatus = GameStatus.Victory;
+        UIController.current.SetPostRaceUI();
     }
 
     public Driver joinGame(string driverName){

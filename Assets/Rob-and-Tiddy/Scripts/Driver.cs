@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Driver : MonoBehaviour
 {
+    public enum Phase {Practicing, Qualifying, Racing, PostRace};
+
+    public Phase phase = Phase.Practicing;
     public bool qualified = false;
+    public bool raceFinished = false;
+
+    public int raceLap = 0;
     bool Active = false;
     public bool active{
         get{
@@ -18,7 +24,7 @@ public class Driver : MonoBehaviour
         }
     }
     
-    public string driverName = "DriverMcDriveFace";
+    public string driverName = "DriverMcDriveyFace";
     public GameObject car;
     public CarPhysics carPhysics;
 
@@ -53,6 +59,7 @@ public class Driver : MonoBehaviour
     }
 
     public void backToGrid(){
+        CarController.current.resetController();
         carPhysics.stopAllMovement();
         car.transform.position = SceneObjects.current.gridPositions[starterRank].position;
         car.transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;

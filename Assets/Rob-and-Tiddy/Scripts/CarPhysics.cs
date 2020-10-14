@@ -120,6 +120,7 @@ public class CarPhysics : MonoBehaviour
         self.velocity = Vector3.zero;
         propulsion = Vector3.zero;
         self.angularVelocity = Vector3.zero;
+        StopThrusters();
     }
     float tempTraction = 1;
     float tempFriction = 0;

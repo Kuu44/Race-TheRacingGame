@@ -39,22 +39,34 @@ public class CarController : ControllerBase<CarController>
             UIController.current.showMessage("Your last lap time was " + new lapTime(currentLapTime).lapTimeAsString(), 3);
             if(RaceManager.current.gameStatus == RaceManager.GameStatus.Qualify && !SceneObjects.current.ActiveDriver.qualified){
                 //RaceManager.current.addQualifyLapTime(currentLapTime, SceneObjects.current.ActiveDriver.driverName);
-                if(preQualifyingLap){
-                    //FOR TESTING
+                if(preQualifyingLap && numQualifyingLaps < RaceManager.current.numberOfQualifyingLaps){
      
                     numQualifyingLaps+=1;
-                    UIController.current.StatusText.text = "Qualifying! (Lap "+ numQualifyingLaps.ToString()+")";
-                    if(numQualifyingLaps > RaceManager.current.numberOfQualifyingLaps){
+                    UIController.current.StatusText.text = "Qualifying! (Lap "+ (numQualifyingLaps+1).ToString()+")";
+                    if(numQualifyingLaps >= RaceManager.current.numberOfQualifyingLaps){
+                        print("Qualifying done");
                         SceneObjects.current.ActiveDriver.qualified = true;
                         UIController.current.StatusText.text = "Waiting";
                     }
-                    RaceManager.current.addQualifyLapTime(currentLapTime, Random.Range(1,4).ToString() + " Driver");
+                    RaceManager.current.addQualifyLapTime(currentLapTime, SceneObjects.current.ActiveDriver.driverName);
                 }else{
                     preQualifyingLap = true;
                     UIController.current.StatusText.text = "Qualifying! (Lap 1)";
-                    UIController.current.showMessage("Good luck! The next lap will be counted", 5);
+                    UIController.current.showMessage("Good luck! This lap will be counted", 5);
                 }
             
+            }
+
+            if(RaceManager.current.gameStatus == RaceManager.GameStatus.Race){
+                
+                SceneObjects.current.ActiveDriver.raceLap +=1;
+                if(SceneObjects.current.ActiveDriver.raceLap >= RaceManager.current.numberOfRaceLaps){
+                    SceneObjects.current.ActiveDriver.raceFinished = true;
+                    RaceManager.current.addRaceFinishEntry(SceneObjects.current.ActiveDriver);
+                }else{
+                //RaceManager.current.progressLap(SceneObjects.current.ActiveDriver);
+                    UIController.current.StatusText.text = "Race! - Lap " + (SceneObjects.current.ActiveDriver.raceLap + 1).ToString();
+                }
             }
             
             
@@ -67,7 +79,7 @@ public class CarController : ControllerBase<CarController>
                     if(preQualifyingLap){
                     }else{
                         preQualifyingLap = true;
-                        UIController.current.showMessage("Good luck! The next lap will be counted", 5);
+                        UIController.current.showMessage("Good luck! This lap will be counted", 5);
                     }
                 
                 }
@@ -75,6 +87,10 @@ public class CarController : ControllerBase<CarController>
             
             currentLapTime = 0;
         }
+        wayPointsPassed.Clear();
+    }
+
+    public void resetController(){
         wayPointsPassed.Clear();
     }
 
@@ -111,8 +127,8 @@ public class CarController : ControllerBase<CarController>
             }
             if(Input.GetKeyUp("m")){
                 //print("N KEY PRESSED");
-                //RaceManager.current.startQualify();
-                UIController.current.startQualifyCountDown();
+                RaceManager.current.startQualify();
+                //UIController.current.startQualifyCountDown();
             }
         }
     }
