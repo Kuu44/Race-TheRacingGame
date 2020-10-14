@@ -99,10 +99,15 @@ public class RaceManager : ControllerBase<RaceManager>
 
     
     public void startQualify(){
+
         if(numberOfQualifyingLaps > 0){
             UIController.current.startQualifyCountDown();
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
                 SceneObjects.current.drivers[i].phase = Driver.Phase.Qualifying;
+                SceneObjects.current.drivers[i].carPhysics.fuel = SceneObjects.current.drivers[i].startingFuel;
+                SceneObjects.current.drivers[i].carPhysics.turbo = 100;
+                UIController.current.setFuelSliderAuto();
+                UIController.current.setTurboSliderAuto();
             }
         }else{
             List<int> nums = new List<int>();
@@ -113,6 +118,10 @@ public class RaceManager : ControllerBase<RaceManager>
                 int n = Random.Range(0, nums.Count);
                 SceneObjects.current.drivers[i].starterRank = nums[n]+1;
                 SceneObjects.current.drivers[i].phase = Driver.Phase.Racing;
+                SceneObjects.current.drivers[i].carPhysics.fuel = SceneObjects.current.drivers[i].startingFuel;
+                SceneObjects.current.drivers[i].carPhysics.turbo = 100;
+                UIController.current.setFuelSliderAuto();
+                UIController.current.setTurboSliderAuto();
                 nums.RemoveAt(n);
             }
             UIController.current.StatusText.text = "Preparing Race";
@@ -141,13 +150,14 @@ public class RaceManager : ControllerBase<RaceManager>
         UIController.current.SetPostRaceUI();
     }
 
-    public Driver joinGame(string driverName){
+    public Driver joinGame(string driverName, float startingFuelAmount){
         if(SceneObjects.current.drivers.Count >= maxNumberOfDrivers){
             return null;
         }else{
             GameObject driverPrefab = Instantiate(SceneObjects.current.driverPrefab, Vector3.zero, Quaternion.identity);
             Driver driverScript = driverPrefab.GetComponent<Driver>();
             driverScript.driverName = driverName;
+            driverScript.startingFuel = startingFuelAmount;
             driverScript.starterRank = SceneObjects.current.drivers.Count;
             SceneObjects.current.drivers.Add(driverScript);
             UIController.current.setDriverTags();
@@ -180,7 +190,7 @@ public class RaceManager : ControllerBase<RaceManager>
         if(Time.frameCount == 30){
             //print("DriveyMcDriverFace joined the game");
             UIController.current.showMessage("DriveyMcDriverFace joined the game", 5);
-            joinGame("DriveyMcDriverFace").active = true;
+            joinGame("DriveyMcDriverFace", 50).active = true;
         }
     }
 }

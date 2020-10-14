@@ -17,7 +17,11 @@ public class CarController : ControllerBase<CarController>
                 SceneObjects.current.ActiveDriver.carPhysics.AccelerateForward(inputY * Time.fixedDeltaTime);
                 SceneObjects.current.ActiveDriver.carPhysics.AddUpwardsTorque(inputX * Time.fixedDeltaTime);
 
-                if(Input.GetKey("space")){
+                if(Input.GetKey("space") && SceneObjects.current.ActiveDriver.phase != Driver.Phase.Qualifying){
+                    SceneObjects.current.ActiveDriver.carPhysics.useTurbo();
+                }
+
+                if(Input.GetKey("b")){
                     SceneObjects.current.ActiveDriver.carPhysics.hardBrake();
                 }
             }
@@ -31,7 +35,9 @@ public class CarController : ControllerBase<CarController>
 
     void Update(){
          if(SceneObjects.current.ActiveDriver){
-            
+            if(Input.GetKeyUp("space")){
+                    SceneObjects.current.ActiveDriver.carPhysics.stopTurbo();
+            }
             
             if(Input.GetKeyUp("n")){
                 //print("N KEY PRESSED");

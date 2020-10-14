@@ -187,6 +187,25 @@ public class UIController : ControllerBase<UIController>
 
     public Text[] driverNameTags;
 
+    public Slider fuel;
+    public Slider turbo;
+
+    public void setFuelSlider(float amount){
+        fuel.value = amount;
+    }
+
+    public void setTurboSlider(float amount){
+        turbo.value = amount;
+    }
+
+    public void setFuelSliderAuto(){
+        fuel.value = SceneObjects.current.ActiveDriver.carPhysics.fuel;
+    }
+
+    public void setTurboSliderAuto(){
+        fuel.value = SceneObjects.current.ActiveDriver.carPhysics.turbo;
+    }
+
     public void setDriverTags(){
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
             driverNameTags[i].text = SceneObjects.current.drivers[i].driverName;

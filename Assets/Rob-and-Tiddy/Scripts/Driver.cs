@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Driver : MonoBehaviour
 {
+    [Range(0,100)]
+    public float startingFuel = 50;
+
     public enum Phase {Practicing, Qualifying, Qualified, Racing, PostRace};
 
     public Phase phase = Phase.Practicing;
@@ -38,6 +41,7 @@ public class Driver : MonoBehaviour
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
         carPhysics = car.GetComponent<CarPhysics>();
         carPhysics.driver = this;
+        carPhysics.fuel = startingFuel;
     }
 
     public void switchCar(int carIndex){
@@ -48,6 +52,7 @@ public class Driver : MonoBehaviour
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
         carPhysics = car.GetComponent<CarPhysics>();
         carPhysics.driver = this;
+        carPhysics.fuel = startingFuel;
     }
 
     public void backToGrid(){

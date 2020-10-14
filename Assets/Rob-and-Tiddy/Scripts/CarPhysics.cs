@@ -6,6 +6,12 @@ using System;
 public class CarPhysics : MonoBehaviour
 {
     //public event Action OnExitFlag;
+    [HideInInspector]
+    [Range(0,100)]
+    public float fuel = 50;
+    [Range(0,100)]
+    public float turbo = 100;
+    [HideInInspector]
     public Driver driver;
     void OnTriggerExit(Collider other){
         if(other.tag == "ChequeredFlag"){
@@ -30,10 +36,67 @@ public class CarPhysics : MonoBehaviour
                 
             }
         }
+        if(other.tag == "PitLane"){
+            if(driver != null){
+                //print("Car: My driver is still here");
+                //driver.wayPointsPassed.Add(other.transform);               
+            }
+            tempAerodynamic = aerodynamic;
+            inPit = false;
+        }
+
+        if(other.tag == "PitLane"){
+            if(driver != null){
+                //print("Car: My driver is still here");
+                //driver.wayPointsPassed.Add(other.transform);               
+            }
+            tempAerodynamic = aerodynamic;
+        }
+
+
+        
 
 
     }
 
+    void OnTriggerStay(Collider other){
+        if(other.tag == "PitLane"){
+            if(driver != null){
+                //print("Car: My driver is still here");
+                //driver.wayPointsPassed.Add(other.transform);               
+            }
+            tempAerodynamic = 10;
+            inPit = true;
+        }
+
+        if(RaceManager.current.allowFuel){
+            if(propulsion.sqrMagnitude < 16){
+                if(other.tag == "Pit"){
+                    if(fuel < 100){
+                        fuel += 0.5f;
+                        if(fuel > 100){
+                            fuel = 100;
+                        }
+                    }
+                    if(turbo < 100){
+                        turbo += 2f;
+                        if(turbo > 100){
+                            turbo = 100;
+                        }
+                    }
+
+
+                    if(driver != null)
+                        if(driver.active)
+                            UIController.current.setFuelSlider(fuel);
+                            UIController.current.setTurboSlider(turbo);
+                }
+            }
+        }
+    }
+
+    public bool thrustersOn;
+    public bool inPit;
     public bool mainCar;
 
 
@@ -58,6 +121,7 @@ public class CarPhysics : MonoBehaviour
     [Range(1,10)]
     public float brakeFactor = 5;
 
+    float tempAerodynamic;
     float thrust = 1;
     public List<ParticleSystem> thrusters;
     public List<Transform> tyres;
@@ -72,6 +136,7 @@ public class CarPhysics : MonoBehaviour
             foreach(ParticleSystem thruster in thrusters){
                 if(thruster.isStopped){
                     thruster.Play();
+                    thrustersOn = true;
                 }
             }
     }
@@ -80,6 +145,7 @@ public class CarPhysics : MonoBehaviour
             foreach(ParticleSystem thruster in thrusters){
                 if(thruster.isPlaying){
                     thruster.Stop();
+                    thrustersOn = false;
                 }
             }
     }
@@ -119,6 +185,20 @@ public class CarPhysics : MonoBehaviour
         self.angularVelocity = Vector3.zero;
         StopThrusters();
     }
+
+    public void useTurbo(){
+        if(!turboOn){
+            turboOn = true;
+        }
+
+    }
+
+    public void stopTurbo(){
+        turboOn = false;
+
+    }
+
+    bool turboOn = false;
     float tempTraction = 1;
     float tempFriction = 0;
     public void hardBrake(){
@@ -131,6 +211,13 @@ public class CarPhysics : MonoBehaviour
     Vector3 normalVec;
     void Start()
     {
+        if(driver != null)
+            if(driver.active)
+                UIController.current.setFuelSlider(fuel);
+                UIController.current.setTurboSlider(turbo);
+
+
+        tempAerodynamic = aerodynamic;
         traction = Traction;
         self = transform.GetComponent<Rigidbody>();
         tempFriction = MainController.current.kineticFriction;
@@ -153,8 +240,26 @@ public class CarPhysics : MonoBehaviour
         }
         
     }
+
+    float speedTerm = 0;
     void FixedUpdate()
     {
+        if(RaceManager.current.allowFuel){
+            if(thrustersOn && fuel > 0){
+                fuel -= 0.005f;
+                if(fuel < 0){
+                    fuel = 0;
+                }
+                
+                if(driver != null)
+                    if(driver.active)
+                        UIController.current.setFuelSlider(fuel);
+            }
+            if(fuel <= 0  && tempAerodynamic > 10){
+                tempAerodynamic = 10;
+            }
+        }
+
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, -transform.up, out hit, 10)){
@@ -223,9 +328,26 @@ public class CarPhysics : MonoBehaviour
         Vector3 orientVec = Vector3.Cross(transform.up, normalVec);
         self.AddTorque(orientVec*orientStrength);
 
-        dragFactor = 1 - propulsion.magnitude * propulsion.magnitude * acceleration / (aerodynamic * 6000000.0f);
+        if(!inPit && fuel > 0 && RaceManager.current.allowFuel){
+            speedTerm = 12.5f - fuel * 0.25f;
+        }
+
+        if(turboOn && turbo > 0){
+            speedTerm += 30;
+
+            turbo -= 0.2f;
+            if(turbo < 0){
+                turbo = 0;
+                
+            }
+            if(driver != null)
+                if(driver.active)
+                    UIController.current.setTurboSlider(turbo);
+        }
+        dragFactor = 1 - propulsion.magnitude * propulsion.magnitude * acceleration / (((tempAerodynamic + speedTerm) * 6000000.0f));
         if(dragFactor < 0) dragFactor = 0;
         propulsion *= dragFactor;
+        speedTerm = 0;
 
         if(propulsion.magnitude > 1){
             propulsion -= propulsion.normalized * tempFriction * acceleration * 0.01f;
@@ -254,6 +376,7 @@ public class CarPhysics : MonoBehaviour
 
         turning = false;
         traction = Traction;
+        
 
         transform.position += deltaPosition;
 
