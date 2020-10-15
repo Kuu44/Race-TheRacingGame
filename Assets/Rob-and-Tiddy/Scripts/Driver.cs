@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Driver : MonoBehaviour
+
+public class Driver : NetworkBehaviour
 {
     [Range(0, 100)]
     public float startingFuel = 50;
@@ -192,26 +194,10 @@ public class Driver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp("space"))
-        {
-            carPhysics.stopTurbo();
-        }
-
-        if (Input.GetKeyUp("n"))
-        {
-            //print("N KEY PRESSED");
-            tempCarIndex += 1;
-            if (tempCarIndex >= SceneObjects.current.carPrefabs.Count)
-            {
-                tempCarIndex = 0;
-            }
-            switchCar(tempCarIndex);
-        }
-        if (Input.GetKeyUp("m"))
-        {
-            //print("N KEY PRESSED");
-            RaceManager.current.startQualify();
-            //UIController.current.startQualifyCountDown();
+        if(isLocalPlayer){ 
+            CmdMove();
+            
+        
         }
         if (active)
         {
@@ -227,7 +213,65 @@ public class Driver : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (SceneObjects.current.ActiveDriver && RaceManager.current.allowCarControl)
+        if(isLocalPlayer)
+        CmdFixedMove();
+
+    }
+
+    public float cameraDistanceBehind = 4.5f;
+    public float cameraDistanceAbove = 2.5f;
+    public float lookDistanceAboveCar = 0.5f;
+
+    [Range(0,1)]
+    public float lookSpeed = 0.1f;
+    [Range(0,1)]
+    public float followSpeed = 0.1f;
+    // Start is called before the first frame update
+
+    // Update is called once per frame
+
+    [Command]
+    void CmdMove(){
+           
+
+
+            if (Input.GetKeyUp("space"))
+            {
+                carPhysics.stopTurbo();
+            }
+
+            if (Input.GetKeyUp("n"))
+            {
+                //print("N KEY PRESSED");
+                tempCarIndex += 1;
+                if (tempCarIndex >= SceneObjects.current.carPrefabs.Count)
+                {
+                    tempCarIndex = 0;
+                }
+                switchCar(tempCarIndex);
+            }
+            if (Input.GetKeyUp("m"))
+            {
+                //print("N KEY PRESSED");
+                RaceManager.current.startQualify();
+                //UIController.current.startQualifyCountDown();
+            }
+        
+    }
+
+    [Command]
+    void CmdFixedMove(){
+         Vector3 carPos = car.transform.position;
+            Vector3 carBack = -car.transform.forward;
+            Vector3 carUp = car.transform.up;
+            Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
+            Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
+
+            Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward,lookTarget, lookSpeed), Vector3.Slerp(Camera.main.transform.up, carUp, lookSpeed));
+
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, movetarget, followSpeed);
+
+        if (RaceManager.current.allowCarControl)
         {
             if (carPhysics)
             {
@@ -249,10 +293,6 @@ public class Driver : MonoBehaviour
             }
 
 
-        }
-        else
-        {
-            //print("ACTIVE DRIVER ABSENT!");
         }
     }
 }
