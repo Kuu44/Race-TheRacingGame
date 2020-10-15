@@ -6,8 +6,8 @@ using UnityEngine;
 [AddComponentMenu("")]
 public class CarNetworkManager : NetworkManager
 {
-    public Transform[] positions;
-    Color cubeColor;
+    Transform[] positions;
+    //Color cubeColor;
     string driverName;
     float startingFuelAmount;
     public bool isLocal;
