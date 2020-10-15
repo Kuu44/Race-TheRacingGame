@@ -94,7 +94,7 @@ public class Driver : NetworkBehaviour
         if (numErrors() <= 2)
         {
             //print("Lap completed successfully!");
-            if (active)
+            if (isLocalPlayer)
             {
                 UIController.current.addLapTime(new lapTime(currentLapTime));
                 UIController.current.showMessage("Your last lap time was " + new lapTime(currentLapTime).lapTimeAsString(), 3);
@@ -106,12 +106,12 @@ public class Driver : NetworkBehaviour
                 {
 
                     currentQualifyingLap += 1;
-                    if (active)
+                    if (isLocalPlayer)
                         UIController.current.StatusText.text = "Qualifying! (Lap " + (currentQualifyingLap + 1).ToString() + ")";
                     if (currentQualifyingLap >= RaceManager.current.numberOfQualifyingLaps)
                     {
                         phase = Phase.Qualified;
-                        if (active)
+                        if (isLocalPlayer)
                             UIController.current.StatusText.text = "Waiting";
                     }
                     RaceManager.current.addQualifyLapTime(currentLapTime, driverName);
@@ -119,7 +119,7 @@ public class Driver : NetworkBehaviour
                 else
                 {
                     preQualifyingLap = true;
-                    if (active)
+                    if (isLocalPlayer)
                     {
                         UIController.current.StatusText.text = "Qualifying! (Lap 1)";
                         UIController.current.showMessage("Good luck! This lap will be counted", 5);
@@ -141,7 +141,7 @@ public class Driver : NetworkBehaviour
                 else
                 {
                     //RaceManager.current.progressLap(SceneObjects.current.ActiveDriver);
-                    if (active)
+                    if (isLocalPlayer)
                         UIController.current.StatusText.text = "Race! - Lap " + (currentRaceLap + 1).ToString();
                 }
             }
@@ -154,7 +154,7 @@ public class Driver : NetworkBehaviour
             //print("Invalid lab, you probably cut corners or something");
             if (wayPointsPassed.Count > 0)
             {
-                if (active)
+                if (isLocalPlayer)
                     UIController.current.showMessage("Invalid lap, you might have missed a corner or something", 5);
                 if (RaceManager.current.gameStatus == RaceManager.GameStatus.Qualify)
                 {
@@ -165,7 +165,7 @@ public class Driver : NetworkBehaviour
                     else
                     {
                         preQualifyingLap = true;
-                        if (active)
+                        if (isLocalPlayer)
                             UIController.current.showMessage("Good luck! This lap will be counted", 5);
                     }
 
@@ -199,7 +199,7 @@ public class Driver : NetworkBehaviour
             
         
         }
-        if (active)
+        if (isLocalPlayer)
         {
             if (Time.frameCount % 10 == 0)
             {

@@ -72,6 +72,7 @@ public class CarPhysics : MonoBehaviour
         if(RaceManager.current.allowFuel){
             if(propulsion.sqrMagnitude < 16){
                 if(other.tag == "Pit"){
+                    print("Fueling works");
                     if(fuel < 100){
                         fuel += 0.5f;
                         if(fuel > 100){
@@ -87,7 +88,7 @@ public class CarPhysics : MonoBehaviour
 
 
                     if(driver != null)
-                        if(driver.active)
+                        if(driver.isLocalPlayer)
                             UIController.current.setFuelSlider(fuel);
                             UIController.current.setTurboSlider(turbo);
                 }
@@ -212,7 +213,7 @@ public class CarPhysics : MonoBehaviour
     void Start()
     {
         if(driver != null)
-            if(driver.active)
+            if(driver.isLocalPlayer)
                 UIController.current.setFuelSlider(fuel);
                 UIController.current.setTurboSlider(turbo);
 
@@ -252,7 +253,7 @@ public class CarPhysics : MonoBehaviour
                 }
                 
                 if(driver != null)
-                    if(driver.active)
+                    if(driver.isLocalPlayer)
                         UIController.current.setFuelSlider(fuel);
             }
             if(fuel <= 0  && tempAerodynamic > 10){
@@ -341,7 +342,7 @@ public class CarPhysics : MonoBehaviour
                 
             }
             if(driver != null)
-                if(driver.active)
+                if(driver.isLocalPlayer)
                     UIController.current.setTurboSlider(turbo);
         }
         dragFactor = 1 - propulsion.magnitude * propulsion.magnitude * acceleration / (((tempAerodynamic + speedTerm) * 6000000.0f));
@@ -366,7 +367,8 @@ public class CarPhysics : MonoBehaviour
                 tyre.Rotate(new Vector3(propulsion.magnitude * 0.1f,0,0), Space.Self);
             }
         }
-
+        if(driver != null)
+        if(driver.isLocalPlayer)
         UIController.current.speed = (int)(propulsion.magnitude);
         
         deltaPosition = propulsion * (Time.fixedDeltaTime) * 0.1f;
