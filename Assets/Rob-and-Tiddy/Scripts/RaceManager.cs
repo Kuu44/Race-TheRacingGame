@@ -187,7 +187,8 @@ public class RaceManager : ControllerBase<RaceManager>
     // Update is called once per frame
     void Update()
     {
-        //if(Time.frameCount == 30){
+        //if (Time.frameCount == 30)
+        //{
         //    //print("DriveyMcDriverFace joined the game");
         //    UIController.current.showMessage("DriveyMcDriverFace joined the game", 5);
         //    joinGame("DriveyMcDriverFace", 50).active = true;
