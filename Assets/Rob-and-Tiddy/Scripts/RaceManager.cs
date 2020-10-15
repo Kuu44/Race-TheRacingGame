@@ -161,11 +161,13 @@ public class RaceManager : ControllerBase<RaceManager>
             driverScript.starterRank = SceneObjects.current.drivers.Count;
             SceneObjects.current.drivers.Add(driverScript);
             UIController.current.setDriverTags();
+            UIController.current.showMessage(driverName + " just joined the game!", 3);
             return driverScript;
         }
     }
 
     public void leaveGame(Driver driver){
+        UIController.current.showMessage(driver.driverName + " left the game", 3);
         SceneObjects.current.drivers.Remove(driver);
         SceneObjects.current.cars.Remove(driver.car);
         Destroy(driver.car);
@@ -192,7 +194,7 @@ public class RaceManager : ControllerBase<RaceManager>
             //print("DriveyMcDriverFace joined the game");
         //    UIController.current.showMessage("DriveyMcDriverFace joined the game", 5);
            //joinGame("DriveyMcDriverFace", 50).active = true;.
-           
+
         }
     }
 }

@@ -218,14 +218,14 @@ public class Driver : NetworkBehaviour
 
     }
 
-    public float cameraDistanceBehind = 4.5f;
-    public float cameraDistanceAbove = 2.5f;
-    public float lookDistanceAboveCar = 0.5f;
+     float cameraDistanceBehind = 2f;
+     float cameraDistanceAbove = 1.5f;
+     float lookDistanceAboveCar = 0.2f;
 
     [Range(0,1)]
-    public float lookSpeed = 0.1f;
+     float lookSpeed = 0.04f;
     [Range(0,1)]
-    public float followSpeed = 0.1f;
+     float followSpeed = 0.1f;
     // Start is called before the first frame update
 
     // Update is called once per frame

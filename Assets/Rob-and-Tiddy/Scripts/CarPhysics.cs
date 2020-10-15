@@ -72,7 +72,7 @@ public class CarPhysics : MonoBehaviour
         if(RaceManager.current.allowFuel){
             if(propulsion.sqrMagnitude < 16){
                 if(other.tag == "Pit"){
-                    print("Fueling works");
+                    //print("Fueling works");
                     if(fuel < 100){
                         fuel += 0.5f;
                         if(fuel > 100){
