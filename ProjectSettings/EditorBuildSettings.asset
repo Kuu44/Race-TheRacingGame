@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Jackal Mirrors ze Targets/Scenes/RoadTrack 1.unity
-    guid: 5e7c206d3b594464a909d1e36c53c773
+    path: Assets/Jackal Mirrors ze Targets/testGame/Assets/Scenes/Game.unity
+    guid: 96514420d9e081e4796112a0c81ad901
   m_configObjects: {}
