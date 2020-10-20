@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0db9bf88c767d53488f6dcc9d45bd2c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   startingFuel: 50
   phase: 0
   driverName: DriverMcDriveFace
