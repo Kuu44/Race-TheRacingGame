@@ -125,7 +125,6 @@ public class Driver : NetworkBehaviour
                         UIController.current.showMessage("Good luck! This lap will be counted", 5);
                     }
                 }
-
             }
             else
 
