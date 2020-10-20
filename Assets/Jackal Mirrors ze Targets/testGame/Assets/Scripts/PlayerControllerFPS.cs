@@ -115,7 +115,6 @@ public class PlayerControllerFPS : NetworkBehaviour, IDamageable
                 {
                     ShootButton();
                 }
-
             }
         }
 
