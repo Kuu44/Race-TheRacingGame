@@ -129,7 +129,7 @@ public class Driver : NetworkBehaviour
 
                         UIController.current.StatusText.text = "Waiting";
                     }
-                    RaceManager.current.CmdAddQualifyLapTime(currentLapTime, driverName);
+                    RaceManager.current.RpcAddQualifyLapTime(currentLapTime, driverName);
                 }
                 else
                 {
@@ -330,16 +330,19 @@ public class Driver : NetworkBehaviour
 
     void FixedMove()
     {
-        Vector3 carPos = car.transform.position;
-        Vector3 carBack = -car.transform.forward;
-        Vector3 carUp = car.transform.up;
-        Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
-        Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
+        if (car != null)
+        {
+            Vector3 carPos = car.transform.position;
+            Vector3 carBack = -car.transform.forward;
+            Vector3 carUp = car.transform.up;
+            Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
+            Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 
-        Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, lookTarget, lookSpeed), Vector3.Slerp(Camera.main.transform.up, carUp, lookSpeed));
+            Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, lookTarget, lookSpeed), Vector3.Slerp(Camera.main.transform.up, carUp, lookSpeed));
 
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, movetarget, followSpeed);
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, movetarget, followSpeed);
 
+        }
         if (RaceManager.current.allowCarControl)
         {
             if (carPhysics)

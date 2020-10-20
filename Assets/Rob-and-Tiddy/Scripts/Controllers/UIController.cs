@@ -164,9 +164,12 @@ public class UIController : ControllerBase<UIController>
     }
     void Update(){
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            
-            Transform carTransform = RaceManager.current.driver(i).car.transform;
-            driverNameTags[i].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(carTransform.position + carTransform.up);
+            GameObject tempCar = RaceManager.current.driver(i).car;
+            if (tempCar != null)
+            {
+                Transform carTransform = tempCar.transform;
+                driverNameTags[i].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(carTransform.position + carTransform.up);
+            }
         }
     }
 

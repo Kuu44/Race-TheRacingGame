@@ -77,8 +77,8 @@ public class RaceManager : NetworkBehaviour
     public float currentLapTimeInSeconds;
 
 
-    [Command]
-    public void CmdAddQualifyLapTime(float timeInSeconds, string driverName){
+    [ClientRpc]
+    public void RpcAddQualifyLapTime(float timeInSeconds, string driverName){
         allQualifyLapTimeDrivers.Add(driverName);
         allQualifyLapTimes.Add(timeInSeconds);
         bool inserted = false;
@@ -89,7 +89,7 @@ public class RaceManager : NetworkBehaviour
                     rankedQualifyLapTimeDrivers.Insert(i, driverName);
                     inserted = true;
                 }else{
-                    if(RaceManager.current.rankedQualifyLapTimeDrivers[i] == driverName){
+                    if(rankedQualifyLapTimeDrivers[i] == driverName){
                         inserted = true;
                         break;
                     }
@@ -108,11 +108,11 @@ public class RaceManager : NetworkBehaviour
         }
 
         UIController.current.setQualifyTimes();
-        checkQualified();
+        RpcCheckQualified();
     }
 
-    [Server]
-    void checkQualified(){
+    [ClientRpc]
+    void RpcCheckQualified(){
         bool QualifyingDone = true;
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
             if(driver(i).phase == Phase.Qualifying){
@@ -136,7 +136,6 @@ public class RaceManager : NetworkBehaviour
         }
     }
 
-    [Server]
     public void startQualify(){
 
         if(numberOfQualifyingLaps > 0){
