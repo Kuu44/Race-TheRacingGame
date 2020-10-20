@@ -8,6 +8,7 @@ public class JkNetworkManager : NetworkManager
 {
     public Transform position1, position2, position3, position4;
     Color cubeColor;
+
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         Transform client;

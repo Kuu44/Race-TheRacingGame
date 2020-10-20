@@ -51,12 +51,7 @@ public class CarPhysics : MonoBehaviour
                 //driver.wayPointsPassed.Add(other.transform);               
             }
             tempAerodynamic = aerodynamic;
-        }
-
-
-        
-
-
+        }     
     }
 
     void OnTriggerStay(Collider other){

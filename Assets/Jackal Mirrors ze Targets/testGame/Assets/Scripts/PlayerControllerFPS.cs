@@ -102,7 +102,6 @@ public class PlayerControllerFPS : NetworkBehaviour, IDamageable
             if (!isDead)
             {
                 MobileInput();
-
             }
         }
         else
@@ -176,22 +175,18 @@ public class PlayerControllerFPS : NetworkBehaviour, IDamageable
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
-
                 Debug.Log("SERVER: Player shot: " + hit.collider.name);
                 if (hit.collider.CompareTag("Player"))
-                {
+                {                   
                     RpcPlayerFiredEntity(GetComponent<NetworkIdentity>().netId, hit.collider.GetComponent<NetworkIdentity>().netId, hit.point, hit.normal);
                     hit.collider.GetComponent<PlayerControllerFPS>().Damage(weaponDamage, GetComponent<NetworkIdentity>().netId);
                 }
                 else
                 {
                     RpcPlayerFired(GetComponent<NetworkIdentity>().netId, hit.point, hit.normal);
-
                 }
-
             }
         }
-
     }
 
     [ClientRpc]
@@ -202,17 +197,13 @@ public class PlayerControllerFPS : NetworkBehaviour, IDamageable
         NetworkIdentity.spawned[shooterID].GetComponent<PlayerControllerFPS>().MuzzleFlash();
     }
 
-
     [ClientRpc]
     void RpcPlayerFiredEntity(uint shooterID, uint targetID, Vector3 impactPos, Vector3 impactRot)
     {
         Instantiate(bulletHolePrefab, impactPos + impactRot * 0.1f, Quaternion.LookRotation(impactRot), NetworkIdentity.spawned[targetID].transform);
         Instantiate(bulletBloodFXPrefab, impactPos, Quaternion.LookRotation(impactRot));
         NetworkIdentity.spawned[shooterID].GetComponent<PlayerControllerFPS>().MuzzleFlash();
-
     }
-
-
 
     [TargetRpc]
     void TargetShoot()
@@ -305,7 +296,6 @@ public class PlayerControllerFPS : NetworkBehaviour, IDamageable
         }
     }
 
-
     [Server]
     public void Die()
     {
@@ -346,8 +336,6 @@ public class PlayerControllerFPS : NetworkBehaviour, IDamageable
         //Called on the died player.
         CanvasManager.instance.ChangePlayerState(!isDead);
         Debug.Log("You died.");
-
-
     }
 
     [TargetRpc]
