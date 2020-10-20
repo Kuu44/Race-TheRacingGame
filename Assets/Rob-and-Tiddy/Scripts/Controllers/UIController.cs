@@ -38,55 +38,6 @@ public class UIController : ControllerBase<UIController>
         message.gameObject.SetActive(false);
     }
 
-    public void startQualifyCountDown(){
-        StartCoroutine(qualifyCountDown());
-    }
-
-    public void startRaceCountDown(){
-        StartCoroutine(raceCountDown());
-    }
-    IEnumerator qualifyCountDown(){
-        string phaseString = "Qualifying";
-        if(RaceManager.current.numberOfQualifyingLaps == 0){
-            phaseString = "Race";
-        }
-        RacePosition.gameObject.SetActive(true);
-        StatusText.text = phaseString + " starts in ";
-        RacePosition.text = "6";
-        for(int i = 0; i < 5; i++){
-            yield return new WaitForSeconds(1);
-            StatusText.text = phaseString + " starts in ";
-            RacePosition.text = (5-i).ToString();
-        }
-        yield return new WaitForSeconds(1);
-        RaceManager.current.gameStatus = RaceManager.GameStatus.Qualify;
-        UIController.current.showMessage("Qualifying has begun! Try for the fastest time after this lap to be ahead at the start!", 10);
-        UIController.current.SetQualifyUI();
-    }
-
-    IEnumerator raceCountDown(){
-        RacePosition.gameObject.SetActive(true);
-        RacePosition.text = "READY!";
-        yield return new WaitForSeconds(5);
-        RaceManager.current.gameStatus = RaceManager.GameStatus.Race;
-        RaceManager.current.allowCarControl = false;
-        for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            SceneObjects.current.drivers[i].backToGrid();
-        }
-        UIController.current.SetRaceUI();
-        StatusText.text = "THE RACE!";
-        for(int i = 0; i < 5; i++){
-            yield return new WaitForSeconds(1);
-            RacePosition.text = (5-i).ToString();
-        }
-        yield return new WaitForSeconds(1);
-        StatusText.text = "Race! - Lap 1";
-        RaceManager.current.allowCarControl = true;
-        RacePosition.text = "GO!";
-        yield return new WaitForSeconds(3);
-        RacePosition.text = "";
-    }
-
     public void SetPracticeUI(){
         StatusText.text = "Practice";
         qualificationRankings.SetActive(false);
@@ -165,7 +116,7 @@ public class UIController : ControllerBase<UIController>
             raceRankings.SetActive(true);
         }
         for(int i = 0; i < Mathf.Min(RaceManager.current.rankedQualifyLapTimeDrivers.Count, qualificationRanks.Length); i++){
-            raceRanks[i].text = (i+1).ToString() + ". "+RaceManager.current.raceFinishers[i].driverName;
+            raceRanks[i].text = (i+1).ToString() + ". "+ RaceManager.current.raceFinishers[i].GetComponent<Driver>().driverName;
         }
     }
 
@@ -198,24 +149,24 @@ public class UIController : ControllerBase<UIController>
         turbo.value = amount;
     }
 
-    public void setFuelSliderAuto(){
+    /*public void setFuelSliderAuto(){
         fuel.value = SceneObjects.current.ActiveDriver.carPhysics.fuel;
-    }
+    }*/
 
-    public void setTurboSliderAuto(){
+    /*public void setTurboSliderAuto(){
         fuel.value = SceneObjects.current.ActiveDriver.carPhysics.turbo;
-    }
+    }*/
 
     public void setDriverTags(){
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            driverNameTags[i].text = SceneObjects.current.drivers[i].driverName;
+            driverNameTags[i].text = RaceManager.current.driver(i).driverName;
         }
     }
     void Update(){
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
             
-            Transform carTransform = SceneObjects.current.drivers[i].car.transform;
-            driverNameTags[i].rectTransform.anchoredPosition = SceneObjects.current.carCam.WorldToScreenPoint(carTransform.position + carTransform.up);
+            Transform carTransform = RaceManager.current.driver(i).car.transform;
+            driverNameTags[i].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(carTransform.position + carTransform.up);
         }
     }
 

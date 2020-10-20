@@ -1,16 +1,17 @@
-﻿using UnityEngine;
+﻿using Mirror;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using Mirror;
 
 [AddComponentMenu("")]
 public class CarNetworkManager : NetworkManager
 {
-    Transform[] positions;
+    //Transform[] positions;
     //Color cubeColor;
-    string driverName;
-    float startingFuelAmount;
+    //string driverName;
+    //float startingFuelAmount;
     public bool isLocal;
-    GameObject driverPrefab;
+    //GameObject driverPrefab;
+
 
     #region Unity Callbacks
 
@@ -87,7 +88,8 @@ public class CarNetworkManager : NetworkManager
     /// <para>This allows server to do work / cleanup / prep before the scene changes.</para>
     /// </summary>
     /// <param name="newSceneName">Name of the scene that's about to be loaded</param>
-    public override void OnServerChangeScene(string newSceneName) {
+    public override void OnServerChangeScene(string newSceneName)
+    {
         //base.OnServerChangeScene(newSceneName);
     }
 
@@ -96,7 +98,8 @@ public class CarNetworkManager : NetworkManager
     /// <br>by the server with ServerChangeScene()</br>
     /// </summary>   
     /// <param name="sceneName">The name of the new scene</param>
-    public override void OnServerSceneChanged(string sceneName) {
+    public override void OnServerSceneChanged(string sceneName)
+    {
         //base.OnServerSceneChanged(sceneName);
     }
 
@@ -107,7 +110,8 @@ public class CarNetworkManager : NetworkManager
     /// <param name="newSceneName">Name of the scene that's about to be loaded</param>
     /// <param name="sceneOperation">Scene operation that's about to happen</param>
     /// <param name="customHandling">true to indicate that scene loading will be handled through overrides</param>
-    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
         //base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 
@@ -132,7 +136,8 @@ public class CarNetworkManager : NetworkManager
     /// the server</para>
     /// </summary>
     /// <param name="conn">Connection from client</param>
-    public override void OnServerConnect(NetworkConnection conn) {
+    public override void OnServerConnect(NetworkConnection conn)
+    {
         //base.OnServerConnect(conn);
     }
 
@@ -156,7 +161,6 @@ public class CarNetworkManager : NetworkManager
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         //destroys the car
-        RaceManager.current.leaveGame(driverPrefab.GetComponent<Driver>());
         base.OnServerDisconnect(conn);
     }
 
@@ -170,7 +174,9 @@ public class CarNetworkManager : NetworkManager
     {
         NetworkManager.startPositions = SceneObjects.current.gridPositions;
         base.OnServerAddPlayer(conn);
-        
+
+
+        /*
         positions = SceneObjects.current.gridPositions.ToArray();
         //assigns a position for each new car (max 4)
 
@@ -179,12 +185,12 @@ public class CarNetworkManager : NetworkManager
         //GameObject player = Instantiate(playerPrefab, client.position, client.rotation);
         //player.GetComponent<Movement>().SetColor(cubeColor);
 
-        driverPrefab = RaceManager.current.joinGame(driverName, 50).gameObject;
+        driverPrefab = SceneObjects.current.drivers[SceneObjects.current.drivers.Count-1].gameObject;
 
         driverPrefab.transform.position = positions[numPlayers].position;
         driverPrefab.transform.rotation = positions[numPlayers].rotation;
 
-        NetworkServer.AddPlayerForConnection(conn, driverPrefab);
+        NetworkServer.AddPlayerForConnection(conn, driverPrefab);*/
     }
 
     /// <summary>
@@ -239,7 +245,8 @@ public class CarNetworkManager : NetworkManager
     /// </summary>
     /// <param name="conn">Connection to a server.</param>
     /// <param name="errorCode">Error code.</param>
-    public override void OnClientError(NetworkConnection conn, int errorCode) {
+    public override void OnClientError(NetworkConnection conn, int errorCode)
+    {
         //base.OnClientError(conn, errorCode);
     }
 
@@ -248,7 +255,8 @@ public class CarNetworkManager : NetworkManager
     /// <para>This is commonly used when switching scenes.</para>
     /// </summary>
     /// <param name="conn">Connection to the server.</param>
-    public override void OnClientNotReady(NetworkConnection conn) {
+    public override void OnClientNotReady(NetworkConnection conn)
+    {
         //base.OnClientNotReady(conn);
     }
 

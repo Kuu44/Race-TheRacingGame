@@ -3,20 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+public enum Phase { Practicing, Qualifying, Qualified, Racing, PostRace };
+
 
 public class Driver : NetworkBehaviour
 {
+
+    int randomPos
+    {
+        get
+        {
+            return Random.Range(0, 100);
+        }
+    }
+
     [Range(0, 100)]
     public float startingFuel = 50;
 
-    public enum Phase { Practicing, Qualifying, Qualified, Racing, PostRace };
-
+    [SyncVar]
     public Phase phase = Phase.Practicing;
+
     int currentRaceLap = 0;
     int currentQualifyingLap = 0;
     bool preQualifyingLap = false;
-    bool Active = false;
-    public bool active
+    //bool Active = false;
+    /*public bool active
     {
         get
         {
@@ -30,16 +41,19 @@ public class Driver : NetworkBehaviour
                 SceneObjects.current.ActiveDriver = this;
             }
         }
-    }
+    }*/
     public string driverName = "DriverMcDriveyFace";
     public GameObject car;
     public CarPhysics carPhysics;
     float currentLapTime = 0;
+    [SyncVar]
     public int starterRank = 0;
+    [SyncVar]
     public int tempCarIndex = 0;
     public List<Transform> wayPointsPassed = new List<Transform>();
 
-    public void selectCar(int carIndex)
+    [ClientRpc]
+    public void RpcSelectCar(int carIndex)
     {
         if (car != null)
         {
@@ -52,7 +66,8 @@ public class Driver : NetworkBehaviour
         carPhysics.fuel = startingFuel;
     }
 
-    public void switchCar(int carIndex)
+    [ClientRpc]
+    public void RpcSwitchCar(int carIndex)
     {
         UIController.current.showMessage("You have switched to a different car", 1);
         if (car != null)
@@ -65,7 +80,8 @@ public class Driver : NetworkBehaviour
         carPhysics.fuel = startingFuel;
     }
 
-    public void backToGrid()
+    [ClientRpc]
+    public void RpcBackToGrid()
     {
         wayPointsPassed.Clear();
         carPhysics.stopAllMovement();
@@ -73,7 +89,7 @@ public class Driver : NetworkBehaviour
         car.transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;
     }
 
-    int numErrors()
+    int TargetNumErrors()
     {
         int result = SceneObjects.current.trackWayPoints.Count - wayPointsPassed.Count;
         if (result < 0) result = 0;
@@ -88,17 +104,16 @@ public class Driver : NetworkBehaviour
         return result;
     }
 
-    public void onPassFlag()
+    [TargetRpc]
+    public void TargetOnPassFlag()
     {
         //print("The main car just passed the chequered Flag!");
-        if (numErrors() <= 2)
+        if (TargetNumErrors() <= 2)
         {
             //print("Lap completed successfully!");
-            if (isLocalPlayer)
-            {
-                UIController.current.addLapTime(new lapTime(currentLapTime));
-                UIController.current.showMessage("Your last lap time was " + new lapTime(currentLapTime).lapTimeAsString(), 3);
-            }
+            UIController.current.addLapTime(new lapTime(currentLapTime));
+            UIController.current.showMessage("Your last lap time was " + new lapTime(currentLapTime).lapTimeAsString(), 3);
+
             if (phase == Phase.Qualifying)
             {
                 //RaceManager.current.addQualifyLapTime(currentLapTime, driverName);
@@ -106,24 +121,23 @@ public class Driver : NetworkBehaviour
                 {
 
                     currentQualifyingLap += 1;
-                    if (isLocalPlayer)
-                        UIController.current.StatusText.text = "Qualifying! (Lap " + (currentQualifyingLap + 1).ToString() + ")";
+
+                    UIController.current.StatusText.text = "Qualifying! (Lap " + (currentQualifyingLap + 1).ToString() + ")";
                     if (currentQualifyingLap >= RaceManager.current.numberOfQualifyingLaps)
                     {
                         phase = Phase.Qualified;
-                        if (isLocalPlayer)
-                            UIController.current.StatusText.text = "Waiting";
+
+                        UIController.current.StatusText.text = "Waiting";
                     }
-                    RaceManager.current.addQualifyLapTime(currentLapTime, driverName);
+                    RaceManager.current.CmdAddQualifyLapTime(currentLapTime, driverName);
                 }
                 else
                 {
                     preQualifyingLap = true;
-                    if (isLocalPlayer)
-                    {
-                        UIController.current.StatusText.text = "Qualifying! (Lap 1)";
-                        UIController.current.showMessage("Good luck! This lap will be counted", 5);
-                    }
+
+                    UIController.current.StatusText.text = "Qualifying! (Lap 1)";
+                    UIController.current.showMessage("Good luck! This lap will be counted", 5);
+
                 }
             }
             else
@@ -135,13 +149,13 @@ public class Driver : NetworkBehaviour
                 if (currentRaceLap >= RaceManager.current.numberOfRaceLaps)
                 {
                     phase = Phase.PostRace;
-                    RaceManager.current.addRaceFinishEntry(SceneObjects.current.ActiveDriver);
+                    RaceManager.current.CmdAddRaceFinishEntry(gameObject);
                 }
                 else
                 {
                     //RaceManager.current.progressLap(SceneObjects.current.ActiveDriver);
-                    if (isLocalPlayer)
-                        UIController.current.StatusText.text = "Race! - Lap " + (currentRaceLap + 1).ToString();
+
+                    UIController.current.StatusText.text = "Race! - Lap " + (currentRaceLap + 1).ToString();
                 }
             }
 
@@ -153,8 +167,8 @@ public class Driver : NetworkBehaviour
             //print("Invalid lab, you probably cut corners or something");
             if (wayPointsPassed.Count > 0)
             {
-                if (isLocalPlayer)
-                    UIController.current.showMessage("Invalid lap, you might have missed a corner or something", 5);
+
+                UIController.current.showMessage("Invalid lap, you might have missed a corner or something", 5);
                 if (RaceManager.current.gameStatus == RaceManager.GameStatus.Qualify)
                 {
                     ;
@@ -164,8 +178,8 @@ public class Driver : NetworkBehaviour
                     else
                     {
                         preQualifyingLap = true;
-                        if (isLocalPlayer)
-                            UIController.current.showMessage("Good luck! This lap will be counted", 5);
+
+                        UIController.current.showMessage("Good luck! This lap will be counted", 5);
                     }
 
                 }
@@ -176,35 +190,90 @@ public class Driver : NetworkBehaviour
         wayPointsPassed.Clear();
     }
 
-    void onDestroy()
+    void OnDestroy()
     {
+
+        SceneObjects.current.drivers.Remove(gameObject);
         if (car != null)
         {
             Destroy(car);
         }
     }
 
+    [TargetRpc]
+    public void TargetSetUI()
+    {
+        UIController.current.setFuelSlider(carPhysics.fuel);
+        UIController.current.setTurboSlider(carPhysics.turbo);
+    }
+
+
+    [TargetRpc]
+    public void TargetSetSpeedUI()
+    {
+        UIController.current.speed = carPhysics.speed;
+    }
+
+    [ClientRpc]
+    public void RpcStartThrusters()
+    {
+        carPhysics.StartThrusters();
+    }
+
+    [ClientRpc]
+    public void RpcStopThrusters()
+    {
+        carPhysics.StopThrusters();
+    }
+
     void Awake()
     {
-        selectCar(tempCarIndex);
+        
         //print(car.name);
     }
 
+    [ClientRpc]
+    void RpcSetDriverStartUI()
+    {
+        UIController.current.setDriverTags();
+        UIController.current.showMessage(driverName + " just joined the game!", 3);
+    }
+
+    [ClientRpc]
+    void RpcSetDriverDestroyUI()
+    {
+        UIController.current.showMessage(driverName + " left the game", 3);
+        UIController.current.setDriverTags();
+    }
+
+    void Start()
+    {
+        startingFuel = 50;
+        starterRank = SceneObjects.current.drivers.Count;
+        RpcSelectCar(tempCarIndex);
+        SceneObjects.current.drivers.Add(gameObject);
+        RpcSetDriverStartUI();
+        driverName = "Driverface " + randomPos.ToString();
+    }
+
     // Update is called once per frame
+
     void Update()
     {
-        if(isLocalPlayer){ 
-            CmdMove();
-            
-        
-        }
-        if (isLocalPlayer)
+        if (!isLocalPlayer)
         {
-            if (Time.frameCount % 10 == 0)
-            {
-                UIController.current.setCurrentLapTime(currentLapTime);
-            }
+            return;
         }
+
+
+        Move();
+
+
+        if (Time.frameCount % 10 == 0)
+        {
+            UIController.current.setCurrentLapTime(currentLapTime);
+        }
+
 
         currentLapTime += Time.deltaTime;
         //TEMPCODE
@@ -212,63 +281,64 @@ public class Driver : NetworkBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(isLocalPlayer)
-        CmdFixedMove();
+        if (!isLocalPlayer)
+            return;
+
+        FixedMove();
 
     }
 
-     float cameraDistanceBehind = 2f;
-     float cameraDistanceAbove = 1.5f;
-     float lookDistanceAboveCar = 0.2f;
+    float cameraDistanceBehind = 2f;
+    float cameraDistanceAbove = 1.5f;
+    float lookDistanceAboveCar = 0.2f;
 
-    [Range(0,1)]
-     float lookSpeed = 0.04f;
-    [Range(0,1)]
-     float followSpeed = 0.1f;
+    [Range(0, 1)]
+    float lookSpeed = 0.04f;
+    [Range(0, 1)]
+    float followSpeed = 0.1f;
     // Start is called before the first frame update
 
     // Update is called once per frame
 
-    [Command]
-    void CmdMove(){
-           
+    void Move()
+    {
 
+        if (Input.GetKeyUp("space"))
+        {
+            carPhysics.stopTurbo();
+        }
 
-            if (Input.GetKeyUp("space"))
+        if (Input.GetKeyUp("n"))
+        {
+            //print("N KEY PRESSED");
+            tempCarIndex += 1;
+            if (tempCarIndex >= SceneObjects.current.carPrefabs.Count)
             {
-                carPhysics.stopTurbo();
+                tempCarIndex = 0;
             }
+            RpcSwitchCar(tempCarIndex);
+        }
+        if (Input.GetKeyUp("m"))
+        {
+            //print("N KEY PRESSED");
+            RaceManager.current.startQualify();
+            //UIController.current.startQualifyCountDown();
+        }
 
-            if (Input.GetKeyUp("n"))
-            {
-                //print("N KEY PRESSED");
-                tempCarIndex += 1;
-                if (tempCarIndex >= SceneObjects.current.carPrefabs.Count)
-                {
-                    tempCarIndex = 0;
-                }
-                switchCar(tempCarIndex);
-            }
-            if (Input.GetKeyUp("m"))
-            {
-                //print("N KEY PRESSED");
-                RaceManager.current.startQualify();
-                //UIController.current.startQualifyCountDown();
-            }
-        
     }
 
-    [Command]
-    void CmdFixedMove(){
-         Vector3 carPos = car.transform.position;
-            Vector3 carBack = -car.transform.forward;
-            Vector3 carUp = car.transform.up;
-            Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
-            Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 
-            Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward,lookTarget, lookSpeed), Vector3.Slerp(Camera.main.transform.up, carUp, lookSpeed));
+    void FixedMove()
+    {
+        Vector3 carPos = car.transform.position;
+        Vector3 carBack = -car.transform.forward;
+        Vector3 carUp = car.transform.up;
+        Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
+        Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 
-            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, movetarget, followSpeed);
+        Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, lookTarget, lookSpeed), Vector3.Slerp(Camera.main.transform.up, carUp, lookSpeed));
+
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, movetarget, followSpeed);
 
         if (RaceManager.current.allowCarControl)
         {
@@ -280,7 +350,7 @@ public class Driver : NetworkBehaviour
                 carPhysics.AccelerateForward(inputY * Time.fixedDeltaTime);
                 carPhysics.AddUpwardsTorque(inputX * Time.fixedDeltaTime);
 
-                if (Input.GetKey("space") && phase != Driver.Phase.Qualifying)
+                if (Input.GetKey("space") && phase != Phase.Qualifying)
                 {
                     carPhysics.useTurbo();
                 }

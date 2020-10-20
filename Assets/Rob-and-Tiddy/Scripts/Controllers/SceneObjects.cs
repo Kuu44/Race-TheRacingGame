@@ -1,42 +1,60 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class SceneObjects : ControllerBase<SceneObjects>
+public class SceneObjects : NetworkBehaviour
 {
-    public override void OnAwake()
+    static SceneObjects _current;
+    public static SceneObjects current
     {
-        base.OnAwake();
-        //WHAT TO DO ON AWAKE
-        track = GameObject.FindGameObjectWithTag("TrackBase").transform;
-        for(int i = 0; i < track.Find("GridPositions").childCount; i++){
-            gridPositions.Add(track.Find("GridPositions").GetChild(i));
+        get
+        {
+            if (_current == null)
+                Debug.Log(typeof(SceneObjects) + " NOT FOUND");
+
+            return _current;
         }
-        for(int i = 0; i < track.Find("TrackWaypoints").childCount; i++){
+    }
+
+
+    void Awake()
+    {
+        _current = this as SceneObjects;
+
+        track = GameObject.FindGameObjectWithTag("TrackBase").transform;
+
+        for (int i = 0; i < track.Find("TrackWaypoints").childCount; i++){
             trackWayPoints.Add(track.Find("TrackWaypoints").GetChild(i));
         }
-        
-        carCam = Camera.main;
+        track = GameObject.FindGameObjectWithTag("TrackBase").transform;
+        for (int i = 0; i < track.Find("GridPositions").childCount; i++)
+        {
+            gridPositions.Add(track.Find("GridPositions").GetChild(i));
+        }
+        //carCam = Camera.main;
 
     }
  
-    
+    [System.Obsolete]
     public Camera carCam;
 
-    Driver activeDriver;
-    public Driver ActiveDriver{
+    //Driver activeDriver;
+    /*public Driver ActiveDriver{
         get{
             return activeDriver;
         }set{
             activeDriver = value;
         }
-    }
+    }*/
     public List<GameObject> carPrefabs;
-    public List<GameObject> cars = new List<GameObject>();
-
-    public List<Driver> drivers;
+    //public List<GameObject> cars = new List<GameObject>();
+    [SyncVar]
+    public List<GameObject> drivers;
 
     public GameObject driverPrefab;
+
+
     public Transform track;
     //public List<Vector3> trackEnvelops = new List<Vector3>();
 

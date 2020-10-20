@@ -5,7 +5,7 @@ using UnityEngine;
 public class CarCamera : MonoBehaviour
 {
 
-    public float cameraDistanceBehind = 4.5f;
+    /*public float cameraDistanceBehind = 4.5f;
     public float cameraDistanceAbove = 2.5f;
     public float lookDistanceAboveCar = 0.5f;
 
@@ -35,5 +35,5 @@ public class CarCamera : MonoBehaviour
                 transform.position = Vector3.Lerp(transform.position, movetarget, followSpeed);
 
         }
-    }
+    }*/
 }

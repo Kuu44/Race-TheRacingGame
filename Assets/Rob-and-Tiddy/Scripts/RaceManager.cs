@@ -1,9 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class RaceManager : ControllerBase<RaceManager>
+public class RaceManager : NetworkBehaviour
 {
+    static RaceManager _current;
+    public static RaceManager current
+    {
+        get
+        {
+            if (_current == null)
+                Debug.Log(typeof(RaceManager) + " NOT FOUND");
+
+            return _current;
+        }
+    }
+
+    void Awake()
+    {
+        _current = this as RaceManager;
+    }
+
+
+
     // Start is called before the first frame update
 
     //Race settings
@@ -15,32 +35,50 @@ public class RaceManager : ControllerBase<RaceManager>
     public int numberOfRaceLaps = 15;
     public bool allowFuel = true;
 
+    public Driver driver(int index)
+    {
+        return SceneObjects.current.drivers[index].GetComponent<Driver>();
+    }
+
+    [SyncVar]
     [HideInInspector]
     public bool allowCarControl = true;
 
+    
     [HideInInspector]
     public enum GameStatus {Practice, Qualify, Race, Victory};
     [HideInInspector]
 
+    [SyncVar]
     public GameStatus gameStatus = GameStatus.Practice;
     [HideInInspector]
+    [SyncVar]
     public List<float> allQualifyLapTimes = new List<float>();
     [HideInInspector]
+    [SyncVar]
     public List<string> allQualifyLapTimeDrivers = new List<string>();
     [HideInInspector]
+    [SyncVar]
     public List<float> rankedQualifyLapTimes = new List<float>();
     [HideInInspector]
+    [SyncVar]
     public List<string> rankedQualifyLapTimeDrivers = new List<string>();
     [HideInInspector]
+    [SyncVar]
     public List<lapTime> raceLapTimes = new List<lapTime>();
+    [SyncVar]
+    [HideInInspector]
+    public List<GameObject> raceFinishers = new List<GameObject>();
+
+    [Header("Local Variables")]
     [HideInInspector]
     public lapTime currentLapTime;
     [HideInInspector]
     public float currentLapTimeInSeconds;
-    [HideInInspector]
-    public List<Driver> raceFinishers = new List<Driver>();
 
-    public void addQualifyLapTime(float timeInSeconds, string driverName){
+
+    [Command]
+    public void CmdAddQualifyLapTime(float timeInSeconds, string driverName){
         allQualifyLapTimeDrivers.Add(driverName);
         allQualifyLapTimes.Add(timeInSeconds);
         bool inserted = false;
@@ -73,41 +111,42 @@ public class RaceManager : ControllerBase<RaceManager>
         checkQualified();
     }
 
+    [Server]
     void checkQualified(){
         bool QualifyingDone = true;
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            if(SceneObjects.current.drivers[i].phase == Driver.Phase.Qualifying){
+            if(driver(i).phase == Phase.Qualifying){
                 QualifyingDone = false;
                 break;
             }
         }
         if(QualifyingDone){
             for(int j = 0; j < SceneObjects.current.drivers.Count; j++){
-                SceneObjects.current.drivers[j].phase = Driver.Phase.Racing;
+                driver(j).phase = Phase.Racing;
                 for(int i = 0; i < rankedQualifyLapTimeDrivers.Count; i++){
-                    if(rankedQualifyLapTimeDrivers[i] == SceneObjects.current.drivers[j].driverName){
-                        SceneObjects.current.drivers[j].starterRank = i;
+                    if(rankedQualifyLapTimeDrivers[i] == driver(j).driverName){
+                        driver(j).starterRank = i;
                         break;
                     }
                 }
             }
 
             UIController.current.StatusText.text = "Qualifying over!";
-            startRace();
+            RpcStartRace();
         }
     }
 
-    
+    [Server]
     public void startQualify(){
 
         if(numberOfQualifyingLaps > 0){
-            UIController.current.startQualifyCountDown();
+            startQualifyCountDown();
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-                SceneObjects.current.drivers[i].phase = Driver.Phase.Qualifying;
-                SceneObjects.current.drivers[i].carPhysics.fuel = SceneObjects.current.drivers[i].startingFuel;
-                SceneObjects.current.drivers[i].carPhysics.turbo = 100;
-                UIController.current.setFuelSliderAuto();
-                UIController.current.setTurboSliderAuto();
+                driver(i).phase = Phase.Qualifying;
+                driver(i).carPhysics.fuel = driver(i).startingFuel;
+                driver(i).carPhysics.turbo = 100;
+                /*UIController.current.setFuelSliderAuto();
+                UIController.current.setTurboSliderAuto();*/
             }
         }else{
             List<int> nums = new List<int>();
@@ -116,27 +155,88 @@ public class RaceManager : ControllerBase<RaceManager>
             }
             for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
                 int n = Random.Range(0, nums.Count);
-                SceneObjects.current.drivers[i].starterRank = nums[n]+1;
-                SceneObjects.current.drivers[i].phase = Driver.Phase.Racing;
-                SceneObjects.current.drivers[i].carPhysics.fuel = SceneObjects.current.drivers[i].startingFuel;
-                SceneObjects.current.drivers[i].carPhysics.turbo = 100;
-                UIController.current.setFuelSliderAuto();
-                UIController.current.setTurboSliderAuto();
+                driver(i).starterRank = nums[n]+1;
+                driver(i).phase = Phase.Racing;
+                driver(i).carPhysics.fuel = driver(i).startingFuel;
+                driver(i).carPhysics.turbo = 100;
+                /*UIController.current.setFuelSliderAuto();
+                UIController.current.setTurboSliderAuto();*/
                 nums.RemoveAt(n);
             }
             UIController.current.StatusText.text = "Preparing Race";
-            startRace();
+            RpcStartRace();
         }
     }
 
-    public void startRace(){
+    [ClientRpc]
+    public void RpcStartRace(){
       
         UIController.current.showMessage("The race is about to begin! Good luck!", 5);
         
-        UIController.current.startRaceCountDown();
+        startRaceCountDown();
     }
 
-    public void addRaceFinishEntry(Driver driver){
+
+    IEnumerator qualifyCountDown()
+    {
+        string phaseString = "Qualifying";
+        if (RaceManager.current.numberOfQualifyingLaps == 0)
+        {
+            phaseString = "Race";
+        }
+        UIController.current.RacePosition.gameObject.SetActive(true);
+        UIController.current.StatusText.text = phaseString + " starts in ";
+        UIController.current.RacePosition.text = "6";
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(1);
+            UIController.current.StatusText.text = phaseString + " starts in ";
+            UIController.current.RacePosition.text = (5 - i).ToString();
+        }
+        yield return new WaitForSeconds(1);
+        gameStatus = GameStatus.Qualify;
+        UIController.current.showMessage("Qualifying has begun! Try for the fastest time after this lap to be ahead at the start!", 10);
+        UIController.current.SetQualifyUI();
+    }
+
+    IEnumerator raceCountDown()
+    {
+        UIController.current.RacePosition.gameObject.SetActive(true);
+        UIController.current.RacePosition.text = "READY!";
+        yield return new WaitForSeconds(5);
+        RaceManager.current.gameStatus = RaceManager.GameStatus.Race;
+        RaceManager.current.allowCarControl = false;
+        for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+        {
+            driver(i).RpcBackToGrid();
+        }
+        UIController.current.SetRaceUI();
+        UIController.current.StatusText.text = "THE RACE!";
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(1);
+            UIController.current.RacePosition.text = (5 - i).ToString();
+        }
+        yield return new WaitForSeconds(1);
+        UIController.current.StatusText.text = "Race! - Lap 1";
+        RaceManager.current.allowCarControl = true;
+        UIController.current.RacePosition.text = "GO!";
+        yield return new WaitForSeconds(3);
+        UIController.current.RacePosition.text = "";
+    }
+
+    public void startQualifyCountDown()
+    {
+        StartCoroutine(qualifyCountDown());
+    }
+
+    public void startRaceCountDown()
+    {
+        StartCoroutine(raceCountDown());
+    }
+
+    [Command]
+    public void CmdAddRaceFinishEntry(GameObject driver){
         raceFinishers.Add(driver);
         UIController.current.setRaceTimes();
         if(raceFinishers.Count == SceneObjects.current.drivers.Count){
@@ -144,15 +244,16 @@ public class RaceManager : ControllerBase<RaceManager>
         }
     }
     
-
+    [Server]
     public void finishRace(){
         gameStatus = GameStatus.Victory;
         UIController.current.SetPostRaceUI();
     }
 
-    public Driver joinGame(string driverName, float startingFuelAmount){
+    /*[ClientRpc]
+    public void RpcJoinGame(string driverName, float startingFuelAmount){
         if(SceneObjects.current.drivers.Count >= maxNumberOfDrivers){
-            return null;
+            return;
         }else{
             GameObject driverPrefab = Instantiate(SceneObjects.current.driverPrefab, Vector3.zero, Quaternion.identity);
             Driver driverScript = driverPrefab.GetComponent<Driver>();
@@ -162,18 +263,14 @@ public class RaceManager : ControllerBase<RaceManager>
             SceneObjects.current.drivers.Add(driverScript);
             UIController.current.setDriverTags();
             UIController.current.showMessage(driverName + " just joined the game!", 3);
-            return driverScript;
+            //return driverScript;
         }
-    }
+    }*/
+    /*
+    [ClientRpc]
+    public void RpcLeaveGame(Driver driver){
 
-    public void leaveGame(Driver driver){
-        UIController.current.showMessage(driver.driverName + " left the game", 3);
-        SceneObjects.current.drivers.Remove(driver);
-        SceneObjects.current.cars.Remove(driver.car);
-        Destroy(driver.car);
-        Destroy(driver.gameObject);
-        UIController.current.setDriverTags();
-    }
+    }*/
 
 
     void Start()
@@ -189,12 +286,5 @@ public class RaceManager : ControllerBase<RaceManager>
     // Update is called once per frame
     void Update()
     {
-        if (Time.frameCount == 30)
-        {
-            //print("DriveyMcDriverFace joined the game");
-        //    UIController.current.showMessage("DriveyMcDriverFace joined the game", 5);
-           //joinGame("DriveyMcDriverFace", 50).active = true;.
-
-        }
     }
 }
