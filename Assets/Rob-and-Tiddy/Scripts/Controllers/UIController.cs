@@ -164,7 +164,7 @@ public class UIController : ControllerBase<UIController>
     }
     void Update(){
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            GameObject tempCar = RaceManager.current.driver(i).car;
+            GameObject tempCar = SceneObjects.current.drivers[i];
             if (tempCar != null)
             {
                 Transform carTransform = tempCar.transform;

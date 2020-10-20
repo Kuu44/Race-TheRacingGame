@@ -1022,12 +1022,11 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 8829849754517667854, guid: 9da635ea5d64d094a94b973fd6fa4a97, type: 3}
+  playerPrefab: {fileID: 6469838717729688234, guid: 3e9108e8e51307445ba9182a51b9b723, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 6469838717729688234, guid: 3e9108e8e51307445ba9182a51b9b723, type: 3}
-  - {fileID: 8829849754517667854, guid: 9da635ea5d64d094a94b973fd6fa4a97, type: 3}
   isLocal: 0
 --- !u!114 &2011504736
 MonoBehaviour:

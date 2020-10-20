@@ -43,7 +43,7 @@ public class Driver : NetworkBehaviour
         }
     }*/
     public string driverName = "DriverMcDriveyFace";
-    public GameObject car;
+    //blic GameObject car;
     public CarPhysics carPhysics;
     float currentLapTime = 0;
     [SyncVar]
@@ -55,13 +55,14 @@ public class Driver : NetworkBehaviour
     [ClientRpc]
     public void RpcSelectCar(int carIndex)
     {
-        if (car != null)
+        /*if (car != null)
         {
             Destroy(car);
-        }
+        }*/
 
-        car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
-        carPhysics = car.GetComponent<CarPhysics>();
+        //car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
+        
+        carPhysics = GetComponent<CarPhysics>();
         carPhysics.driver = this;
         carPhysics.fuel = startingFuel;
     }
@@ -69,7 +70,7 @@ public class Driver : NetworkBehaviour
     [ClientRpc]
     public void RpcSwitchCar(int carIndex)
     {
-        UIController.current.showMessage("You have switched to a different car", 1);
+        /*UIController.current.showMessage("You have switched to a different car", 1);
         if (car != null)
         {
             Destroy(car);
@@ -77,7 +78,7 @@ public class Driver : NetworkBehaviour
         car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
         carPhysics = car.GetComponent<CarPhysics>();
         carPhysics.driver = this;
-        carPhysics.fuel = startingFuel;
+        carPhysics.fuel = startingFuel;*/
     }
 
     [ClientRpc]
@@ -85,8 +86,8 @@ public class Driver : NetworkBehaviour
     {
         wayPointsPassed.Clear();
         carPhysics.stopAllMovement();
-        car.transform.position = SceneObjects.current.gridPositions[starterRank].position;
-        car.transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;
+        transform.position = SceneObjects.current.gridPositions[starterRank].position;
+        transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;
     }
 
     int TargetNumErrors()
@@ -194,10 +195,10 @@ public class Driver : NetworkBehaviour
     {
 
         SceneObjects.current.drivers.Remove(gameObject);
-        if (car != null)
+        /*if (car != null)
         {
             Destroy(car);
-        }
+        }*/
     }
 
     [TargetRpc]
@@ -330,11 +331,9 @@ public class Driver : NetworkBehaviour
 
     void FixedMove()
     {
-        if (car != null)
-        {
-            Vector3 carPos = car.transform.position;
-            Vector3 carBack = -car.transform.forward;
-            Vector3 carUp = car.transform.up;
+            Vector3 carPos = transform.position;
+            Vector3 carBack = -transform.forward;
+            Vector3 carUp = transform.up;
             Vector3 movetarget = carPos + carBack * cameraDistanceBehind + carUp * cameraDistanceAbove;
             Vector3 lookTarget = carPos + carUp * lookDistanceAboveCar;
 
@@ -342,7 +341,7 @@ public class Driver : NetworkBehaviour
 
             Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, movetarget, followSpeed);
 
-        }
+
         if (RaceManager.current.allowCarControl)
         {
             if (carPhysics)
