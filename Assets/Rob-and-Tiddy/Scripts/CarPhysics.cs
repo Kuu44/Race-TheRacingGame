@@ -103,32 +103,31 @@ public class CarPhysics : MonoBehaviour
     public bool inPit;
     public bool mainCar;
 
+    [HideInInspector]
+    public float aerodynamic = 50f;
 
-    [SerializeField]
-    [Range(10, 100f)]
-    private float aerodynamic = 50f;
+    [HideInInspector]
+    public float acceleration = 50f;
 
-    [SerializeField]
-    [Range(10,100f)]
-    private float acceleration = 50f;
+    [HideInInspector]
+    public float turnStrength = 5;
 
-    [SerializeField]
-    [Range(0, 10f)]
-    private float turnStrength = 5;
-
-    [Range(0f,1f)]
+    [HideInInspector]
     public float Traction = 0.5f;
 
-    [Range(1f,8f)]
+    [HideInInspector]
     public float orientStrength = 3;
 
-    [Range(1,10)]
+    [HideInInspector]
     public float brakeFactor = 5;
 
     float tempAerodynamic;
     float thrust = 1;
+    [HideInInspector]
     public List<ParticleSystem> thrusters;
+    [HideInInspector]
     public List<Transform> tyres;
+    [HideInInspector]
     public List<Transform> tyreSuspensions;
     Rigidbody self;
     Vector3 deltaPosition = Vector3.zero;

@@ -11,6 +11,8 @@ TagManager:
   - WayPoint
   - PitLane
   - Pit
+  - FxTemporaire
+  - CarMesh
   layers:
   - Default
   - TransparentFX

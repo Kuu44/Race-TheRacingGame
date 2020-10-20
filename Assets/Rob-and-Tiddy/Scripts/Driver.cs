@@ -26,24 +26,10 @@ public class Driver : NetworkBehaviour
     int currentRaceLap = 0;
     int currentQualifyingLap = 0;
     bool preQualifyingLap = false;
-    //bool Active = false;
-    /*public bool active
-    {
-        get
-        {
-            return Active;
-        }
-        set
-        {
-            Active = value;
-            if (value == true)
-            {
-                SceneObjects.current.ActiveDriver = this;
-            }
-        }
-    }*/
+
     public string driverName = "DriverMcDriveyFace";
-    //blic GameObject car;
+    GameObject carMesh;
+    Car car;
     public CarPhysics carPhysics;
     float currentLapTime = 0;
     [SyncVar]
@@ -55,30 +41,31 @@ public class Driver : NetworkBehaviour
     [ClientRpc]
     public void RpcSelectCar(int carIndex)
     {
-        /*if (car != null)
+        if (carMesh != null)
         {
-            Destroy(car);
-        }*/
+            Destroy(carMesh);
+        }
 
-        //car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
-        
-        carPhysics = GetComponent<CarPhysics>();
-        carPhysics.driver = this;
-        carPhysics.fuel = startingFuel;
+        GameObject tempCar = Instantiate(SceneObjects.current.carPrefabs[carIndex], transform);
+        tempCar.transform.SetParent(transform);
+        carMesh = tempCar.gameObject;
+        car = carMesh.GetComponent<Car>();
+        car.setPropertiesToCar();
     }
 
     [ClientRpc]
     public void RpcSwitchCar(int carIndex)
     {
-        /*UIController.current.showMessage("You have switched to a different car", 1);
-        if (car != null)
+        if (carMesh != null)
         {
-            Destroy(car);
+            Destroy(carMesh);
         }
-        car = Instantiate(SceneObjects.current.carPrefabs[carIndex], SceneObjects.current.gridPositions[starterRank].position, SceneObjects.current.gridPositions[starterRank].rotation);
-        carPhysics = car.GetComponent<CarPhysics>();
-        carPhysics.driver = this;
-        carPhysics.fuel = startingFuel;*/
+
+        GameObject tempCar = Instantiate(SceneObjects.current.carPrefabs[carIndex], transform);
+        tempCar.transform.SetParent(transform);
+        carMesh = tempCar.gameObject;
+        car = carMesh.GetComponent<Car>();
+        car.setPropertiesToCar();
     }
 
     [ClientRpc]
@@ -251,11 +238,28 @@ public class Driver : NetworkBehaviour
     {
         startingFuel = 50;
         starterRank = SceneObjects.current.drivers.Count;
+        carPhysics = GetComponent<CarPhysics>();
+        carPhysics.driver = this;
+        carPhysics.fuel = startingFuel;
         RpcSelectCar(tempCarIndex);
         SceneObjects.current.drivers.Add(gameObject);
         RpcSetDriverStartUI();
         driverName = "Driverface " + randomPos.ToString();
+
     }
+
+    Transform findChildWithTag(string tag)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).tag == tag)
+            {
+                return transform.GetChild(i);
+            }
+        }
+        return null;
+    }
+
 
     // Update is called once per frame
 

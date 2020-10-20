@@ -1669,7 +1669,9 @@ MonoBehaviour:
   syncInterval: 0.1
   carCam: {fileID: 369150659}
   carPrefabs:
-  - {fileID: 6469838717729688234, guid: 3e9108e8e51307445ba9182a51b9b723, type: 3}
+  - {fileID: 164909134276924219, guid: 6fe3b95023e2afb43b96ec99775ceee3, type: 3}
+  - {fileID: 8313232322299809116, guid: f8d23e671d623f041859c1eddd9c18df, type: 3}
+  - {fileID: 6180637792033033008, guid: 8fcd0f3918832334b9e0ac87804a9108, type: 3}
   drivers: []
   driverPrefab: {fileID: 8829849754517667854, guid: 9da635ea5d64d094a94b973fd6fa4a97, type: 3}
   track: {fileID: 0}
