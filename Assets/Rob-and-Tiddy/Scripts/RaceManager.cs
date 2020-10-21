@@ -73,11 +73,11 @@ public class RaceManager : NetworkBehaviour
     [HideInInspector]
     public List<GameObject> raceFinishers = new List<GameObject>();
 
-    [Header("Local Variables")]
+   /* [Header("Local Variables")]
     [HideInInspector]
     public lapTime currentLapTime;
     [HideInInspector]
-    public float currentLapTimeInSeconds;
+    public float currentLapTimeInSeconds;*/
 
 
     [Server]
@@ -215,7 +215,7 @@ public class RaceManager : NetworkBehaviour
 
     [Server]
     public void CmdStartQualify(){
-        RpcPrint("m was pressed and reached raceManager");
+        //RpcPrint("m was pressed and reached raceManager");
         if (numberOfQualifyingLaps > 0)
         {
             for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
@@ -240,11 +240,6 @@ public class RaceManager : NetworkBehaviour
     }
 
 
-    [Server]
-    public void CmdTesting(){
-
-        RpcPrint("AAAH");
-    }
     
 
     [ClientRpc]
@@ -392,10 +387,10 @@ public class RaceManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.frameCount == 500)
+        /*if(Time.frameCount == 500)
         {
             Debug.Log("Starting qualify");
             CmdStartQualify();
-        }
+        }*/
     }
 }

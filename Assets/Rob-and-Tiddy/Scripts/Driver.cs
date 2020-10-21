@@ -302,6 +302,12 @@ public class Driver : NetworkBehaviour
 
     }
 
+    [Command]
+    void CmdDebugStartQualifying()
+    {
+        RaceManager.current.CmdStartQualify();
+    }
+
     Transform findChildWithTag(string tag)
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -380,7 +386,8 @@ public class Driver : NetworkBehaviour
         if (Input.GetKeyUp("m"))
         {
             print("M KEY PRESSED");
-            RaceManager.current.CmdStartQualify();
+            if(RaceManager.current.gameStatus == RaceManager.GameStatus.Practice)
+                CmdDebugStartQualifying();
             //UIController.current.startQualifyCountDown();
         }
 
