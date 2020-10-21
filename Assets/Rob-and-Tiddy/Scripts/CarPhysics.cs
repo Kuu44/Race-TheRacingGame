@@ -3,32 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public static class icoVertices
-{
-    public static Vector3[] icoVertex =
-    {
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1),
-        new Vector3(1,0,1)
-    };
-}
 
 
 public class CarPhysics : MonoBehaviour
@@ -341,7 +315,52 @@ public class CarPhysics : MonoBehaviour
                     }
                 }
             }
-            if(!found){
+            for(int i = 0; i < 1; i++){
+                RaycastHit hit3;
+                if (Physics.Raycast(transform.position, transform.forward - transform.up, out hit3, 20))
+                {
+                    if (hit3.collider.tag == "Track")
+                    {
+                        closestPointOnTrack = hit3.point;
+                        normalVec = hit3.normal;
+                        found = true;
+                        break;
+                    }
+                }
+                if (Physics.Raycast(transform.position, -transform.forward - transform.up, out hit3, 20))
+                {
+                    if (hit3.collider.tag == "Track")
+                    {
+                        closestPointOnTrack = hit3.point;
+                        normalVec = hit3.normal;
+                        found = true;
+                        break;
+                    }
+                }
+                if (Physics.Raycast(transform.position, transform.forward, out hit3, 20))
+                {
+                    if (hit3.collider.tag == "Track")
+                    {
+                        closestPointOnTrack = hit3.point;
+                        normalVec = hit3.normal;
+                        found = true;
+                        break;
+                    }
+                }
+                if (Physics.Raycast(transform.position, -transform.forward, out hit3, 20))
+                {
+                    if (hit3.collider.tag == "Track")
+                    {
+                        closestPointOnTrack = hit3.point;
+                        normalVec = hit3.normal;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!found){
+
                 normalVec = Vector3.ProjectOnPlane((transform.position - closestPointOnTrack), transform.forward).normalized;
             }
         }
