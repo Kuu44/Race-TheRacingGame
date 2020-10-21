@@ -99,12 +99,12 @@ public class CarPhysics : MonoBehaviour
             if (thrustersOn)
             {
                 if (driver != null)
-                    driver.RpcStartThrusters();
+                    driver.CmdStartThrusters();
             }
             else
             {
                 if (driver != null)
-                    driver.RpcStopThrusters();
+                    driver.CmdStopThrusters();
             }
         }
     }
@@ -315,46 +315,50 @@ public class CarPhysics : MonoBehaviour
                     }
                 }
             }
-            for(int i = 0; i < 1; i++){
-                RaycastHit hit3;
-                if (Physics.Raycast(transform.position, transform.forward - transform.up, out hit3, 20))
+            if (!found)
+            {
+                for (int i = 0; i < 1; i++)
                 {
-                    if (hit3.collider.tag == "Track")
+                    RaycastHit hit3;
+                    if (Physics.Raycast(transform.position, transform.forward - transform.up, out hit3, 20))
                     {
-                        closestPointOnTrack = hit3.point;
-                        normalVec = hit3.normal;
-                        found = true;
-                        break;
+                        if (hit3.collider.tag == "Track")
+                        {
+                            closestPointOnTrack = hit3.point;
+                            normalVec = hit3.normal;
+                            found = true;
+                            break;
+                        }
                     }
-                }
-                if (Physics.Raycast(transform.position, -transform.forward - transform.up, out hit3, 20))
-                {
-                    if (hit3.collider.tag == "Track")
+                    if (Physics.Raycast(transform.position, -transform.forward - transform.up, out hit3, 20))
                     {
-                        closestPointOnTrack = hit3.point;
-                        normalVec = hit3.normal;
-                        found = true;
-                        break;
+                        if (hit3.collider.tag == "Track")
+                        {
+                            closestPointOnTrack = hit3.point;
+                            normalVec = hit3.normal;
+                            found = true;
+                            break;
+                        }
                     }
-                }
-                if (Physics.Raycast(transform.position, transform.forward, out hit3, 20))
-                {
-                    if (hit3.collider.tag == "Track")
+                    if (Physics.Raycast(transform.position, transform.forward, out hit3, 20))
                     {
-                        closestPointOnTrack = hit3.point;
-                        normalVec = hit3.normal;
-                        found = true;
-                        break;
+                        if (hit3.collider.tag == "Track")
+                        {
+                            closestPointOnTrack = hit3.point;
+                            normalVec = hit3.normal;
+                            found = true;
+                            break;
+                        }
                     }
-                }
-                if (Physics.Raycast(transform.position, -transform.forward, out hit3, 20))
-                {
-                    if (hit3.collider.tag == "Track")
+                    if (Physics.Raycast(transform.position, -transform.forward, out hit3, 20))
                     {
-                        closestPointOnTrack = hit3.point;
-                        normalVec = hit3.normal;
-                        found = true;
-                        break;
+                        if (hit3.collider.tag == "Track")
+                        {
+                            closestPointOnTrack = hit3.point;
+                            normalVec = hit3.normal;
+                            found = true;
+                            break;
+                        }
                     }
                 }
             }

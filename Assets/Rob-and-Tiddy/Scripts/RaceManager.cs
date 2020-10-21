@@ -77,54 +77,82 @@ public class RaceManager : NetworkBehaviour
     public float currentLapTimeInSeconds;
 
 
+    [Command]
+    public void CmdAddQualifyLapTime(float timeInSeconds, string driverName){
+        RpcAddQualifyLapTime(timeInSeconds, driverName);
+    }
+
     [ClientRpc]
-    public void RpcAddQualifyLapTime(float timeInSeconds, string driverName){
+    public void RpcAddQualifyLapTime(float timeInSeconds, string driverName)
+    {
         allQualifyLapTimeDrivers.Add(driverName);
         allQualifyLapTimes.Add(timeInSeconds);
         bool inserted = false;
-        for(int i = 0; i < rankedQualifyLapTimes.Count; i++){
-            if(!inserted){
-                if(timeInSeconds < rankedQualifyLapTimes[i]){
+        for (int i = 0; i < rankedQualifyLapTimes.Count; i++)
+        {
+            if (!inserted)
+            {
+                if (timeInSeconds < rankedQualifyLapTimes[i])
+                {
                     rankedQualifyLapTimes.Insert(i, timeInSeconds);
                     rankedQualifyLapTimeDrivers.Insert(i, driverName);
                     inserted = true;
-                }else{
-                    if(rankedQualifyLapTimeDrivers[i] == driverName){
+                }
+                else
+                {
+                    if (rankedQualifyLapTimeDrivers[i] == driverName)
+                    {
                         inserted = true;
                         break;
                     }
                 }
-            }else{
-                if(rankedQualifyLapTimeDrivers[i] == driverName){
+            }
+            else
+            {
+                if (rankedQualifyLapTimeDrivers[i] == driverName)
+                {
                     rankedQualifyLapTimeDrivers.RemoveAt(i);
                     rankedQualifyLapTimes.RemoveAt(i);
                 }
             }
         }
 
-        if(!inserted && rankedQualifyLapTimes.Count < 10){
+        if (!inserted && rankedQualifyLapTimes.Count < 10)
+        {
             rankedQualifyLapTimes.Add(timeInSeconds);
             rankedQualifyLapTimeDrivers.Add(driverName);
         }
 
         UIController.current.setQualifyTimes();
+        CmdCheckQualified();
+    }
+
+    [Command]
+    void CmdCheckQualified(){
         RpcCheckQualified();
     }
 
     [ClientRpc]
-    void RpcCheckQualified(){
+    void RpcCheckQualified()
+    {
         bool QualifyingDone = true;
-        for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
-            if(driver(i).phase == Phase.Qualifying){
+        for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+        {
+            if (driver(i).phase == Phase.Qualifying)
+            {
                 QualifyingDone = false;
                 break;
             }
         }
-        if(QualifyingDone){
-            for(int j = 0; j < SceneObjects.current.drivers.Count; j++){
+        if (QualifyingDone)
+        {
+            for (int j = 0; j < SceneObjects.current.drivers.Count; j++)
+            {
                 driver(j).phase = Phase.Racing;
-                for(int i = 0; i < rankedQualifyLapTimeDrivers.Count; i++){
-                    if(rankedQualifyLapTimeDrivers[i] == driver(j).driverName){
+                for (int i = 0; i < rankedQualifyLapTimeDrivers.Count; i++)
+                {
+                    if (rankedQualifyLapTimeDrivers[i] == driver(j).driverName)
+                    {
                         driver(j).starterRank = i;
                         break;
                     }
@@ -132,9 +160,11 @@ public class RaceManager : NetworkBehaviour
             }
 
             UIController.current.StatusText.text = "Qualifying over!";
-            RpcStartRace();
+            CmdStartRace();
         }
     }
+
+
 
     public void startQualify(){
 
@@ -163,15 +193,24 @@ public class RaceManager : NetworkBehaviour
                 nums.RemoveAt(n);
             }
             UIController.current.StatusText.text = "Preparing Race";
-            RpcStartRace();
+            CmdStartRace();
         }
     }
 
+
+
+    [Command]
+    public void CmdStartRace(){
+
+        RpcStartRace();
+    }
+
     [ClientRpc]
-    public void RpcStartRace(){
-      
+    public void RpcStartRace()
+    {
+
         UIController.current.showMessage("The race is about to begin! Good luck!", 5);
-        
+
         startRaceCountDown();
     }
 
@@ -207,7 +246,7 @@ public class RaceManager : NetworkBehaviour
         RaceManager.current.allowCarControl = false;
         for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
         {
-            driver(i).RpcBackToGrid();
+            driver(i).CmdBackToGrid();
         }
         UIController.current.SetRaceUI();
         UIController.current.StatusText.text = "THE RACE!";

@@ -38,6 +38,12 @@ public class Driver : NetworkBehaviour
     public int tempCarIndex = 0;
     public List<Transform> wayPointsPassed = new List<Transform>();
 
+    [Command]
+    public void CmdSelectCar(int carIndex)
+    {
+        RpcSelectCar(carIndex);
+    }
+
     [ClientRpc]
     public void RpcSelectCar(int carIndex)
     {
@@ -52,6 +58,15 @@ public class Driver : NetworkBehaviour
         car = carMesh.GetComponent<Car>();
         car.setPropertiesToCar();
     }
+
+   
+
+    [Command]
+    public void CmdSwitchCar(int carIndex)
+    {
+        RpcSwitchCar(carIndex);
+    }
+
 
     [ClientRpc]
     public void RpcSwitchCar(int carIndex)
@@ -68,6 +83,14 @@ public class Driver : NetworkBehaviour
         car.setPropertiesToCar();
     }
 
+
+
+    [Command]
+    public void CmdBackToGrid()
+    {
+        RpcBackToGrid();
+    }
+
     [ClientRpc]
     public void RpcBackToGrid()
     {
@@ -76,6 +99,8 @@ public class Driver : NetworkBehaviour
         transform.position = SceneObjects.current.gridPositions[starterRank].position;
         transform.rotation = SceneObjects.current.gridPositions[starterRank].rotation;
     }
+
+
 
     int TargetNumErrors()
     {
@@ -92,7 +117,7 @@ public class Driver : NetworkBehaviour
         return result;
     }
 
-    [TargetRpc]
+    //[TargetRpc]
     public void TargetOnPassFlag()
     {
         //print("The main car just passed the chequered Flag!");
@@ -117,7 +142,7 @@ public class Driver : NetworkBehaviour
 
                         UIController.current.StatusText.text = "Waiting";
                     }
-                    RaceManager.current.RpcAddQualifyLapTime(currentLapTime, driverName);
+                    RaceManager.current.CmdAddQualifyLapTime(currentLapTime, driverName);
                 }
                 else
                 {
@@ -182,13 +207,10 @@ public class Driver : NetworkBehaviour
     {
 
         SceneObjects.current.drivers.Remove(gameObject);
-        /*if (car != null)
-        {
-            Destroy(car);
-        }*/
+        CmdSetDriverDestroyUI();
     }
 
-    [TargetRpc]
+    //[TargetRpc]
     public void TargetSetUI()
     {
         UIController.current.setFuelSlider(carPhysics.fuel);
@@ -196,10 +218,16 @@ public class Driver : NetworkBehaviour
     }
 
 
-    [TargetRpc]
+    //[TargetRpc]
     public void TargetSetSpeedUI()
     {
         UIController.current.speed = carPhysics.speed;
+    }
+
+    [Command]
+    public void CmdStartThrusters()
+    {
+        RpcStartThrusters();
     }
 
     [ClientRpc]
@@ -208,16 +236,33 @@ public class Driver : NetworkBehaviour
         carPhysics.StartThrusters();
     }
 
+
+
+
+
+
+    [Command]
+    public void CmdStopThrusters()
+    {
+        RpcStopThrusters();
+    }
     [ClientRpc]
     public void RpcStopThrusters()
     {
         carPhysics.StopThrusters();
     }
 
+
     void Awake()
     {
         
         //print(car.name);
+    }
+
+    [Command]
+    void CmdSetDriverStartUI()
+    {
+        RpcSetDriverStartUI();
     }
 
     [ClientRpc]
@@ -227,12 +272,20 @@ public class Driver : NetworkBehaviour
         UIController.current.showMessage(driverName + " just joined the game!", 3);
     }
 
+    [Command]
+    void CmdSetDriverDestroyUI()
+    {
+        RpcSetDriverDestroyUI();
+    }
+
+
     [ClientRpc]
     void RpcSetDriverDestroyUI()
     {
         UIController.current.showMessage(driverName + " left the game", 3);
         UIController.current.setDriverTags();
     }
+
 
     void Start()
     {
@@ -241,9 +294,9 @@ public class Driver : NetworkBehaviour
         carPhysics = GetComponent<CarPhysics>();
         carPhysics.driver = this;
         carPhysics.fuel = startingFuel;
-        RpcSelectCar(tempCarIndex);
+        CmdSelectCar(tempCarIndex);
         SceneObjects.current.drivers.Add(gameObject);
-        RpcSetDriverStartUI();
+        CmdSetDriverStartUI();
         driverName = "Driverface " + randomPos.ToString();
 
     }
@@ -321,7 +374,7 @@ public class Driver : NetworkBehaviour
             {
                 tempCarIndex = 0;
             }
-            RpcSwitchCar(tempCarIndex);
+            CmdSwitchCar(tempCarIndex);
         }
         if (Input.GetKeyUp("m"))
         {
