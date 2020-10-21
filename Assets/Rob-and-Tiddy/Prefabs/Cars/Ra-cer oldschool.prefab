@@ -902,12 +902,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe514215453aa774c96bee8beb1eacc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  speed: 90
   acceleration: 45
   turnStrength: 10
   Traction: 1
   orientStrength: 3
-  brakeFactor: 2
+  brakeFactor: 3
   thrusters:
   - {fileID: 6763102838462722718}
   tyres:

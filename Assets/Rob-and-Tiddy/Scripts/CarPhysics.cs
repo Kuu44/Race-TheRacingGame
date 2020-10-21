@@ -393,11 +393,11 @@ public class CarPhysics : MonoBehaviour
         self.AddTorque(orientVec*orientStrength);
 
         if(!inPit && fuel > 0 && RaceManager.current.allowFuel){
-            speedTerm = 12.5f - fuel * 0.25f;
+            speedTerm = 20f - fuel * 0.4f;
         }
 
         if(turboOn && turbo > 0){
-            speedTerm += 30;
+            speedTerm += 50;
 
             turbo -= 0.2f;
             if(turbo < 0){
@@ -410,7 +410,7 @@ public class CarPhysics : MonoBehaviour
                 driver.TargetSetUI();
             }
         }
-        dragFactor = 1 - propulsion.magnitude * propulsion.magnitude * acceleration / (((tempAerodynamic + speedTerm) * 6000000.0f));
+        dragFactor = 1 - propulsion.magnitude * acceleration / (((tempAerodynamic + speedTerm) * 35000.0f));
         if(dragFactor < 0) dragFactor = 0;
         propulsion *= dragFactor;
         speedTerm = 0;
