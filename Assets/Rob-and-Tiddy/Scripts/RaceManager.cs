@@ -80,7 +80,7 @@ public class RaceManager : NetworkBehaviour
     public float currentLapTimeInSeconds;
 
 
-    [Command]
+    [Server]
     public void CmdAddQualifyLapTime(float timeInSeconds, string driverName){
         AddQualifyLapTime(timeInSeconds, driverName);
     }
@@ -137,7 +137,7 @@ public class RaceManager : NetworkBehaviour
     }
 
 
-    [Command]
+    [Server]
     void CmdCheckQualified(){
         CheckQualified();
     }
@@ -206,10 +206,16 @@ public class RaceManager : NetworkBehaviour
         driver(driverIndex).starterRank = rank;
     }
 
+    [ClientRpc]
+    public void RpcPrint(string toPrint)
+    {
+        Debug.Log(toPrint);
+    }
 
-    [Command]
+
+    [Server]
     public void CmdStartQualify(){
-        print("m was pressed and reached raceManager");
+        RpcPrint("m was pressed and reached raceManager");
         if (numberOfQualifyingLaps > 0)
         {
             for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
@@ -234,12 +240,12 @@ public class RaceManager : NetworkBehaviour
     }
 
 
-    /*[Command]
-    public void CmdStartRace(){
+    [Server]
+    public void CmdTesting(){
 
-        RpcStartRace();
+        RpcPrint("AAAH");
     }
-    */
+    
 
     [ClientRpc]
     public void RpcStartRace()
@@ -250,7 +256,7 @@ public class RaceManager : NetworkBehaviour
         RpcStartRaceCountDown();
     }
 
-    [Command]
+    [Server]
     public void CmdSetGameStatus(RaceManager.GameStatus status)
     {
         gameStatus = status;
@@ -317,7 +323,7 @@ public class RaceManager : NetworkBehaviour
         StartCoroutine(raceCountDown());
     }
 
-    [Command]
+    [Server]
     public void CmdAddRaceFinishEntry(GameObject driver){
         raceFinishers.Add(driver);
         UIController.current.setRaceTimes();
@@ -354,7 +360,7 @@ public class RaceManager : NetworkBehaviour
 
     }*/
 
-    [Command]
+    [Server]
     public void CmdRefreshAllCarModels()
     {
         RpcRefreshAllCarModels();
@@ -363,6 +369,7 @@ public class RaceManager : NetworkBehaviour
     [ClientRpc]
     void RpcRefreshAllCarModels()
     {
+        Debug.Log("Car models refreshed");
         for(int i = 0; i < SceneObjects.current.drivers.Count; i++)
         {
             driver(i).CmdSelectCar(driver(i).tempCarIndex);

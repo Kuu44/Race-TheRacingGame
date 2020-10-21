@@ -379,7 +379,7 @@ public class Driver : NetworkBehaviour
         }
         if (Input.GetKeyUp("m"))
         {
-            //print("N KEY PRESSED");
+            print("M KEY PRESSED");
             RaceManager.current.CmdStartQualify();
             //UIController.current.startQualifyCountDown();
         }
