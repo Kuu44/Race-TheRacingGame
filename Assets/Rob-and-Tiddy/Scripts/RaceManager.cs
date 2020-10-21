@@ -27,12 +27,16 @@ public class RaceManager : NetworkBehaviour
     // Start is called before the first frame update
 
     //Race settings
+    [SyncVar]
     [Range(2,10)]
     public int maxNumberOfDrivers = 10;
     [Range(0,5)]
+    [SyncVar]
     public int numberOfQualifyingLaps = 2;
     [Range(1,50)]
+    [SyncVar]
     public int numberOfRaceLaps = 15;
+    [SyncVar]
     public bool allowFuel = true;
 
     public Driver driver(int index)
@@ -45,7 +49,6 @@ public class RaceManager : NetworkBehaviour
     public bool allowCarControl = true;
 
     
-    [HideInInspector]
     public enum GameStatus {Practice, Qualify, Race, Victory};
     [HideInInspector]
 
@@ -79,11 +82,11 @@ public class RaceManager : NetworkBehaviour
 
     [Command]
     public void CmdAddQualifyLapTime(float timeInSeconds, string driverName){
-        RpcAddQualifyLapTime(timeInSeconds, driverName);
+        AddQualifyLapTime(timeInSeconds, driverName);
     }
 
-    [ClientRpc]
-    public void RpcAddQualifyLapTime(float timeInSeconds, string driverName)
+    //[ClientRpc]
+    public void AddQualifyLapTime(float timeInSeconds, string driverName)
     {
         allQualifyLapTimeDrivers.Add(driverName);
         allQualifyLapTimes.Add(timeInSeconds);
@@ -122,18 +125,25 @@ public class RaceManager : NetworkBehaviour
             rankedQualifyLapTimes.Add(timeInSeconds);
             rankedQualifyLapTimeDrivers.Add(driverName);
         }
-
-        UIController.current.setQualifyTimes();
+        RpcSetUIQualifyTimes();
+        
         CmdCheckQualified();
     }
 
-    [Command]
-    void CmdCheckQualified(){
-        RpcCheckQualified();
+    [ClientRpc]
+    void RpcSetUIQualifyTimes()
+    {
+        UIController.current.setQualifyTimes();
     }
 
-    [ClientRpc]
-    void RpcCheckQualified()
+
+    [Command]
+    void CmdCheckQualified(){
+        CheckQualified();
+    }
+
+    //[ClientRpc]
+    void CheckQualified()
     {
         bool QualifyingDone = true;
         for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
@@ -153,68 +163,83 @@ public class RaceManager : NetworkBehaviour
                 {
                     if (rankedQualifyLapTimeDrivers[i] == driver(j).driverName)
                     {
-                        driver(j).starterRank = i;
+                        RpcSetDriverStarterRank(j,i);
                         break;
                     }
                 }
             }
 
-            UIController.current.StatusText.text = "Qualifying over!";
-            CmdStartRace();
+            //UIController.current.StatusText.text = "Qualifying over!";
+            RpcStartRace();
         }
+    }
+
+    [ClientRpc]
+    void RpcResetDriverFuelAndTurbo()
+    {
+        for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+        {
+            driver(i).carPhysics.fuel = driver(i).startingFuel;
+            driver(i).carPhysics.turbo = 100;
+        }
+    }
+
+    [ClientRpc]
+    void RpcRandomiseDriverGridPositions()
+    {
+        List<int> nums = new List<int>();
+        for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+        {
+            nums.Add(i);
+        }
+        for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+        {
+            int n = Random.Range(0, nums.Count);
+            driver(i).starterRank = nums[n] + 1;
+            nums.RemoveAt(n);
+        }
+    }
+
+    [ClientRpc]
+    void RpcSetDriverStarterRank(int driverIndex, int rank)
+    {
+        driver(driverIndex).starterRank = rank;
     }
 
 
     [Command]
     public void CmdStartQualify(){
-
-        RpcStartQualify();
-    }
-
-    [ClientRpc]
-    public void RpcStartQualify()
-    {
+        print("m was pressed and reached raceManager");
         if (numberOfQualifyingLaps > 0)
         {
-            startQualifyCountDown();
             for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
             {
                 driver(i).phase = Phase.Qualifying;
-                driver(i).carPhysics.fuel = driver(i).startingFuel;
-                driver(i).carPhysics.turbo = 100;
-                /*UIController.current.setFuelSliderAuto();
-                UIController.current.setTurboSliderAuto();*/
             }
+            RpcResetDriverFuelAndTurbo();
+            RpcStartQualifyCountDown();
         }
         else
         {
-            List<int> nums = new List<int>();
+            RpcResetDriverFuelAndTurbo();
+            RpcRandomiseDriverGridPositions();
             for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
             {
-                nums.Add(i);
-            }
-            for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
-            {
-                int n = Random.Range(0, nums.Count);
-                driver(i).starterRank = nums[n] + 1;
                 driver(i).phase = Phase.Racing;
-                driver(i).carPhysics.fuel = driver(i).startingFuel;
-                driver(i).carPhysics.turbo = 100;
-                /*UIController.current.setFuelSliderAuto();
-                UIController.current.setTurboSliderAuto();*/
-                nums.RemoveAt(n);
             }
-            UIController.current.StatusText.text = "Preparing Race";
-            CmdStartRace();
+
+            //UIController.current.StatusText.text = "Preparing Race";
+            RpcStartRace();
         }
     }
 
 
-    [Command]
+    /*[Command]
     public void CmdStartRace(){
 
         RpcStartRace();
     }
+    */
 
     [ClientRpc]
     public void RpcStartRace()
@@ -222,9 +247,14 @@ public class RaceManager : NetworkBehaviour
 
         UIController.current.showMessage("The race is about to begin! Good luck!", 5);
 
-        startRaceCountDown();
+        RpcStartRaceCountDown();
     }
 
+    [Command]
+    public void CmdSetGameStatus(RaceManager.GameStatus status)
+    {
+        gameStatus = status;
+    }
 
     IEnumerator qualifyCountDown()
     {
@@ -243,7 +273,8 @@ public class RaceManager : NetworkBehaviour
             UIController.current.RacePosition.text = (5 - i).ToString();
         }
         yield return new WaitForSeconds(1);
-        gameStatus = GameStatus.Qualify;
+        //gameStatus = GameStatus.Qualify;
+        CmdSetGameStatus(RaceManager.GameStatus.Qualify);
         UIController.current.showMessage("Qualifying has begun! Try for the fastest time after this lap to be ahead at the start!", 10);
         UIController.current.SetQualifyUI();
     }
@@ -274,12 +305,14 @@ public class RaceManager : NetworkBehaviour
         UIController.current.RacePosition.text = "";
     }
 
-    public void startQualifyCountDown()
+    [ClientRpc]
+    public void RpcStartQualifyCountDown()
     {
         StartCoroutine(qualifyCountDown());
     }
 
-    public void startRaceCountDown()
+    [ClientRpc]
+    public void RpcStartRaceCountDown()
     {
         StartCoroutine(raceCountDown());
     }
@@ -352,5 +385,10 @@ public class RaceManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Time.frameCount == 500)
+        {
+            Debug.Log("Starting qualify");
+            CmdStartQualify();
+        }
     }
 }

@@ -205,9 +205,9 @@ public class Driver : NetworkBehaviour
 
     void OnDestroy()
     {
-
+        //CmdSetDriverDestroyUI();
         SceneObjects.current.drivers.Remove(gameObject);
-        CmdSetDriverDestroyUI();
+
     }
 
     //[TargetRpc]
