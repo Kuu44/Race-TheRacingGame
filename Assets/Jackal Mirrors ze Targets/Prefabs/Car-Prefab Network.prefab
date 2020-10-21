@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1854499249637689753}
   - component: {fileID: -6330018596217563213}
   - component: {fileID: 5489451145246075651}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Car-Prefab Network
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -396,6 +396,16 @@ public class CarPhysics : MonoBehaviour
             speedTerm = 20f - fuel * 0.4f;
         }
 
+        //slipstream
+        RaycastHit slipStreamRay;
+        if(Physics.SphereCast(transform.position, 1, transform.forward, out slipStreamRay, 40, LayerMask.GetMask("Car"))){
+            speedTerm += 40 - hit.distance;
+        }
+
+
+
+
+
         if(turboOn && turbo > 0){
             speedTerm += 50;
 
