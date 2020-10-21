@@ -165,26 +165,38 @@ public class RaceManager : NetworkBehaviour
     }
 
 
+    [Command]
+    public void CmdStartQualify(){
 
-    public void startQualify(){
+        RpcStartQualify();
+    }
 
-        if(numberOfQualifyingLaps > 0){
+    [ClientRpc]
+    public void RpcStartQualify()
+    {
+        if (numberOfQualifyingLaps > 0)
+        {
             startQualifyCountDown();
-            for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
+            for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+            {
                 driver(i).phase = Phase.Qualifying;
                 driver(i).carPhysics.fuel = driver(i).startingFuel;
                 driver(i).carPhysics.turbo = 100;
                 /*UIController.current.setFuelSliderAuto();
                 UIController.current.setTurboSliderAuto();*/
             }
-        }else{
+        }
+        else
+        {
             List<int> nums = new List<int>();
-            for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
+            for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+            {
                 nums.Add(i);
             }
-            for(int i = 0; i < SceneObjects.current.drivers.Count; i++){
+            for (int i = 0; i < SceneObjects.current.drivers.Count; i++)
+            {
                 int n = Random.Range(0, nums.Count);
-                driver(i).starterRank = nums[n]+1;
+                driver(i).starterRank = nums[n] + 1;
                 driver(i).phase = Phase.Racing;
                 driver(i).carPhysics.fuel = driver(i).startingFuel;
                 driver(i).carPhysics.turbo = 100;
@@ -196,7 +208,6 @@ public class RaceManager : NetworkBehaviour
             CmdStartRace();
         }
     }
-
 
 
     [Command]
@@ -309,6 +320,23 @@ public class RaceManager : NetworkBehaviour
     public void RpcLeaveGame(Driver driver){
 
     }*/
+
+    [Command]
+    public void CmdRefreshAllCarModels()
+    {
+        RpcRefreshAllCarModels();
+    }
+
+    [ClientRpc]
+    void RpcRefreshAllCarModels()
+    {
+        for(int i = 0; i < SceneObjects.current.drivers.Count; i++)
+        {
+            driver(i).CmdSelectCar(driver(i).tempCarIndex);
+        }
+    }
+
+
 
 
     void Start()

@@ -291,13 +291,14 @@ public class Driver : NetworkBehaviour
     {
         startingFuel = 50;
         starterRank = SceneObjects.current.drivers.Count;
+        driverName = "Driverface " + randomPos.ToString();
         carPhysics = GetComponent<CarPhysics>();
         carPhysics.driver = this;
         carPhysics.fuel = startingFuel;
         CmdSelectCar(tempCarIndex);
         SceneObjects.current.drivers.Add(gameObject);
         CmdSetDriverStartUI();
-        driverName = "Driverface " + randomPos.ToString();
+        RaceManager.current.CmdRefreshAllCarModels();
 
     }
 
@@ -379,7 +380,7 @@ public class Driver : NetworkBehaviour
         if (Input.GetKeyUp("m"))
         {
             //print("N KEY PRESSED");
-            RaceManager.current.startQualify();
+            RaceManager.current.CmdStartQualify();
             //UIController.current.startQualifyCountDown();
         }
 
