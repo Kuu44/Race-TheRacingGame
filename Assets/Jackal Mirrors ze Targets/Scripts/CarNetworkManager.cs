@@ -175,7 +175,7 @@ public class CarNetworkManager : NetworkManager
         NetworkManager.startPositions = SceneObjects.current.gridPositions;
         base.OnServerAddPlayer(conn);
 
-
+        RaceManager.current.CmdRefreshAllCarModels();
         /*
         positions = SceneObjects.current.gridPositions.ToArray();
         //assigns a position for each new car (max 4)

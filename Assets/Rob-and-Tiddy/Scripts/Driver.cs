@@ -298,7 +298,7 @@ public class Driver : NetworkBehaviour
         CmdSelectCar(tempCarIndex);
         SceneObjects.current.drivers.Add(gameObject);
         CmdSetDriverStartUI();
-        RaceManager.current.CmdRefreshAllCarModels();
+        
 
     }
 
