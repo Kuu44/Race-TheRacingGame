@@ -3,6 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+public static class icoVertices
+{
+    public static Vector3[] icoVertex =
+    {
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1),
+        new Vector3(1,0,1)
+    };
+}
+
+
 public class CarPhysics : MonoBehaviour
 {
     //public event Action OnExitFlag;
@@ -70,6 +98,15 @@ public class CarPhysics : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+
+    public void setTempAerodynamic()
+    {
+        if(tempAerodynamic != 10)
+        {
+            tempAerodynamic = aerodynamic;
         }
     }
 
@@ -152,6 +189,8 @@ public class CarPhysics : MonoBehaviour
                 }
             }
     }
+
+
 
     public void AccelerateForward(float strength){
         if(strength > 0.01f){

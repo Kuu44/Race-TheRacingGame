@@ -39,6 +39,8 @@ public class Car : MonoBehaviour
         p.brakeFactor = brakeFactor;
         p.thrusters = thrusters;
         p.tyres = tyres;
+
+        p.setTempAerodynamic();
     }
 
 }
