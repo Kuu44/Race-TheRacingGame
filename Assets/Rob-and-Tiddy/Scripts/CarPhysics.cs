@@ -87,6 +87,22 @@ public class CarPhysics : MonoBehaviour
     }
 
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.transform.tag == "track")
+        {
+            self.angularVelocity = Vector3.zero;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.transform.tag == "track")
+        {
+            self.angularVelocity = Vector3.zero;
+        }
+    }
+
     public void setTempAerodynamic()
     {
         if(tempAerodynamic != 10)
