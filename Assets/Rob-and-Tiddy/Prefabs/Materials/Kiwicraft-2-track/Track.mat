@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Tubey 2
+  m_Name: Track
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _EMISSION _NORMALMAP _PARALLAXMAP
   m_LightmapFlags: 2
@@ -20,7 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: fcab17c6c269f77458c3b453a9e2bc2e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 68c151304d88fbe46814490158b3d408, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -36,12 +36,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 6c9eb347cc87c204994b228d7774e3b2, type: 3}
-        m_Scale: {x: 15, y: 6}
+        m_Texture: {fileID: 2800000, guid: db2bccaf8af0f6346ab562e52e7bc878, type: 3}
+        m_Scale: {x: 4, y: 1.5}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 4474ad9ab0399234bbb5dd014187c972, type: 3}
-        m_Scale: {x: 15, y: 6}
+        m_Texture: {fileID: 2800000, guid: 42bb7992aeeda7f49b51557d8168ef4d, type: 3}
+        m_Scale: {x: 4, y: 1.5}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
-        m_Texture: {fileID: 2800000, guid: 59cfce2e899a560468d4815ce1c730ef, type: 3}
+        m_Texture: {fileID: 2800000, guid: d53ea2546aa4f3944a2d9a8cd80138d7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -61,12 +61,12 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.76
+    - _Glossiness: 0.67
     - _GlossyReflections: 1
-    - _Metallic: 0.36
+    - _Metallic: 0.49
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.0097
+    - _Parallax: 0.0303
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -74,5 +74,5 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 2, g: 0, b: 0.13414097, a: 1}
+    - _EmissionColor: {r: 0, g: 0.75392663, b: 1.9999998, a: 1}
   m_BuildTextureStacks: []

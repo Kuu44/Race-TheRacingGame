@@ -107,13 +107,13 @@ public class Driver : NetworkBehaviour
         int result = SceneObjects.current.trackWayPoints.Count - wayPointsPassed.Count;
         if (result < 0) result = 0;
 
-        for (int i = 0; i < Mathf.Min(wayPointsPassed.Count, SceneObjects.current.trackWayPoints.Count); i++)
+        /*for (int i = 0; i < Mathf.Min(wayPointsPassed.Count, SceneObjects.current.trackWayPoints.Count); i++)
         {
             if (wayPointsPassed[i] != SceneObjects.current.trackWayPoints[i])
             {
                 result++;
             }
-        }
+        }*/
         return result;
     }
 
@@ -121,7 +121,7 @@ public class Driver : NetworkBehaviour
     public void TargetOnPassFlag()
     {
         //print("The main car just passed the chequered Flag!");
-        if (TargetNumErrors() <= 2)
+        if (TargetNumErrors() <= 1)
         {
             //print("Lap completed successfully!");
             UIController.current.addLapTime(new lapTime(currentLapTime));

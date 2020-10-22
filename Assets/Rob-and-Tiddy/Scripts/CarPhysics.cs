@@ -34,7 +34,18 @@ public class CarPhysics : MonoBehaviour
 
         if(other.tag == "WayPoint"){
             if(driver != null){
-                driver.wayPointsPassed.Add(other.transform);                
+                bool newPoint = true;
+                for(int i = 0; i< driver.wayPointsPassed.Count; i++)
+                {
+                    if(driver.wayPointsPassed[i] == other.transform)
+                    {
+                        newPoint = false;
+                    }
+                }
+                if (newPoint)
+                {
+                    driver.wayPointsPassed.Add(other.transform);
+                }
             }
         }
         if(other.tag == "PitLane"){
