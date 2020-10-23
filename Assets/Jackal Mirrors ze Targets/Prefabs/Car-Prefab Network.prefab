@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1854499249637689753}
   - component: {fileID: -6330018596217563213}
   - component: {fileID: 5489451145246075651}
+  - component: {fileID: 2350397975511859773}
   m_Layer: 10
   m_Name: Car-Prefab Network
   m_TagString: Untagged
@@ -148,3 +149,16 @@ MonoBehaviour:
   starterRank: 0
   tempCarIndex: 0
   wayPointsPassed: []
+--- !u!114 &2350397975511859773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6469838717729688234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8872248f7374204bb7b5ddbb7ebc390, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}

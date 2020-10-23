@@ -50,7 +50,6 @@ MonoBehaviour:
   startingFuel: 50
   phase: 0
   driverName: DriverMcDriveFace
-  car: {fileID: 0}
   carPhysics: {fileID: 0}
   starterRank: 1
   tempCarIndex: 0
