@@ -286,7 +286,7 @@ public class CarPhysics : MonoBehaviour
     {
         if(RaceManager.current.allowFuel){
             if(thrustersOn && fuel > 0){
-                fuel -= 0.005f;
+                fuel -= 0.003f;
                 if(fuel < 0){
                     fuel = 0;
                 }
