@@ -381,9 +381,16 @@ public class CarPhysics : MonoBehaviour
         }
         posVec = closestPointOnTrack - transform.position;
 
-        if(posVec.sqrMagnitude < 1){
+        
+
+        if(posVec.sqrMagnitude < 100){
             thrust = 1;
-        }else{
+        }else
+        if(posVec.sqrMagnitude < 9){
+            thrust = 0.6f;
+        }
+        else
+        {
             thrust = 1 / (1f * posVec.sqrMagnitude);
         }
 
@@ -391,7 +398,7 @@ public class CarPhysics : MonoBehaviour
             thrust *= 1 - MainController.current.turningThrustLoss;
         }
 
-        if(posVec.sqrMagnitude > 4){
+        if(posVec.sqrMagnitude > 100){
 
             propulsion *= 0.95f;
         }

@@ -170,7 +170,7 @@ public class RaceManager : NetworkBehaviour
             }
 
             //UIController.current.StatusText.text = "Qualifying over!";
-            RpcStartRace();
+            RpcStartRaceCountDown();
         }
     }
 
@@ -235,21 +235,14 @@ public class RaceManager : NetworkBehaviour
             }
 
             //UIController.current.StatusText.text = "Preparing Race";
-            RpcStartRace();
+            RpcStartRaceCountDown();
         }
     }
 
 
     
 
-    [ClientRpc]
-    public void RpcStartRace()
-    {
 
-        UIController.current.showMessage("The race is about to begin! Good luck!", 5);
-
-        RpcStartRaceCountDown();
-    }
 
     [Server]
     public void CmdSetGameStatus(RaceManager.GameStatus status)
@@ -315,6 +308,8 @@ public class RaceManager : NetworkBehaviour
     [ClientRpc]
     public void RpcStartRaceCountDown()
     {
+        UIController.current.showMessage("The race is about to begin! Good luck!", 5);
+
         StartCoroutine(raceCountDown());
     }
 
