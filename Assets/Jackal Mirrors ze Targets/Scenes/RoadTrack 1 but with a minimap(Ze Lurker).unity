@@ -427,7 +427,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1865751942}
-  - {fileID: 1668139472}
   m_Father: {fileID: 611718452766838553}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 18.837, y: 0, z: 0}
@@ -473,6 +472,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &717784345 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5775858608737742248, guid: a4c446fb10978bc4da4b1a5d8a2c5839, type: 3}
+  m_PrefabInstance: {fileID: 2276555027815838819}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &724111110 stripped
@@ -921,7 +931,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2.99
+  orthographic size: 80
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -945,11 +955,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668139470}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 4.59, y: 3.6469998, z: -8.82}
+  m_LocalScale: {x: 1, y: 1.0000001, z: 1.0000001}
   m_Children: []
-  m_Father: {fileID: 369150661}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1692484730 stripped
 MonoBehaviour:
@@ -1628,6 +1638,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 611718452766838553}
     m_Modifications:
+    - target: {fileID: 1711460014002732381, guid: a4c446fb10978bc4da4b1a5d8a2c5839, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 2861819614799291409, guid: a4c446fb10978bc4da4b1a5d8a2c5839, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1912,6 +1926,7 @@ MonoBehaviour:
   - {fileID: 264043027}
   - {fileID: 634393306}
   - {fileID: 1622303601}
+  driverNameField: {fileID: 717784345}
   fuel: {fileID: 1912210682}
   turbo: {fileID: 756878893}
 --- !u!4 &7190187683533510466

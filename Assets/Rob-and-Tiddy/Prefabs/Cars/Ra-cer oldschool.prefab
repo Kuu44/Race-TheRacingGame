@@ -902,11 +902,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe514215453aa774c96bee8beb1eacc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 90
+  speed: 80
   acceleration: 45
   turnStrength: 10
   Traction: 1
-  orientStrength: 8
+  orientStrength: 5
   brakeFactor: 3
   thrusters:
   - {fileID: 6763102838462722718}

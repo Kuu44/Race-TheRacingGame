@@ -14,6 +14,7 @@ TagManager:
   - FxTemporaire
   - CarMesh
   - Minimap Camera
+  - NoDecayZone
   layers:
   - Default
   - TransparentFX
@@ -26,7 +27,7 @@ TagManager:
   - Ze blip
   - Ze track
   - Car
-  - 
+  - Track
   - 
   - 
   - 

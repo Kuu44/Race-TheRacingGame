@@ -16,6 +16,8 @@ public class CarPhysics : MonoBehaviour
     [HideInInspector]
     public Driver driver;
 
+    bool speedDecay = true;
+
     public int speed
     {
         get
@@ -30,6 +32,10 @@ public class CarPhysics : MonoBehaviour
             if(driver != null){
                 driver.TargetOnPassFlag();
             }
+        }
+
+        if(other.tag == "NoDecayZone"){
+            speedDecay = true;
         }
 
         if(other.tag == "WayPoint"){
@@ -59,6 +65,12 @@ public class CarPhysics : MonoBehaviour
             tempAerodynamic = 10;
             inPit = true;
         }
+
+        
+        if(other.tag == "NoDecayZone"){
+            speedDecay = false;
+        }
+
 
         if(RaceManager.current.allowFuel){
             if(propulsion.sqrMagnitude < 16){
@@ -292,10 +304,10 @@ public class CarPhysics : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, -transform.up, out hit, 10)){
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 10, LayerMask.GetMask("Track"))){
             if(hit.collider.tag == "Track"){
                 RaycastHit hit2;
-                if(Physics.Raycast(transform.position, -hit.normal, out hit2, 10)){
+                if(Physics.Raycast(transform.position, -hit.normal, out hit2, 10, LayerMask.GetMask("Track"))){
                     if(hit2.collider.tag == "Track"){
                         closestPointOnTrack = hit2.point;
                         normalVec = hit.normal;
@@ -309,7 +321,7 @@ public class CarPhysics : MonoBehaviour
             bool found = false;
             for(int i = 5; i <=180; i =i +5){
                 RaycastHit hit3;              
-                if(Physics.Raycast(transform.position, Vector3.SlerpUnclamped(-transform.up, transform.right, i/90.0f), out hit3, 10)){
+                if(Physics.Raycast(transform.position, Vector3.SlerpUnclamped(-transform.up, transform.right, i/90.0f), out hit3, 10, LayerMask.GetMask("Track"))){
                     if(hit3.collider.tag == "Track"){
                         closestPointOnTrack = hit3.point;
                         normalVec = hit3.normal;
@@ -317,7 +329,7 @@ public class CarPhysics : MonoBehaviour
                         break;
                     }
                 }
-                if(Physics.Raycast(transform.position, Vector3.SlerpUnclamped(-transform.up, -transform.right, i/90.0f), out hit3, 10)){
+                if(Physics.Raycast(transform.position, Vector3.SlerpUnclamped(-transform.up, -transform.right, i/90.0f), out hit3, 10, LayerMask.GetMask("Track"))){
                     if(hit3.collider.tag == "Track"){
                         closestPointOnTrack = hit3.point;
                         normalVec = hit3.normal;
@@ -331,7 +343,7 @@ public class CarPhysics : MonoBehaviour
                 for (int i = 0; i < 1; i++)
                 {
                     RaycastHit hit3;
-                    if (Physics.Raycast(transform.position, transform.forward - transform.up, out hit3, 20))
+                    if (Physics.Raycast(transform.position, transform.forward - transform.up, out hit3, 20, LayerMask.GetMask("Track")))
                     {
                         if (hit3.collider.tag == "Track")
                         {
@@ -341,7 +353,7 @@ public class CarPhysics : MonoBehaviour
                             break;
                         }
                     }
-                    if (Physics.Raycast(transform.position, -transform.forward - transform.up, out hit3, 20))
+                    if (Physics.Raycast(transform.position, -transform.forward - transform.up, out hit3, 20, LayerMask.GetMask("Track")))
                     {
                         if (hit3.collider.tag == "Track")
                         {
@@ -351,7 +363,7 @@ public class CarPhysics : MonoBehaviour
                             break;
                         }
                     }
-                    if (Physics.Raycast(transform.position, transform.forward, out hit3, 20))
+                    if (Physics.Raycast(transform.position, transform.forward, out hit3, 20, LayerMask.GetMask("Track")))
                     {
                         if (hit3.collider.tag == "Track")
                         {
@@ -361,7 +373,7 @@ public class CarPhysics : MonoBehaviour
                             break;
                         }
                     }
-                    if (Physics.Raycast(transform.position, -transform.forward, out hit3, 20))
+                    if (Physics.Raycast(transform.position, -transform.forward, out hit3, 20, LayerMask.GetMask("Track")))
                     {
                         if (hit3.collider.tag == "Track")
                         {
@@ -399,33 +411,35 @@ public class CarPhysics : MonoBehaviour
             thrust *= 1 - MainController.current.turningThrustLoss;
         }
 
+        if(speedDecay){
         if(posVec.sqrMagnitude > 9){
 
             propulsion *= 0.95f;
-        }
+        }}
 
 
         /*if(posVec.sqrMagnitude > 10){
             propulsion *= (1 - 5 * 0.01f);
         }*/
 
-        Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight * posVec.sqrMagnitude;
-
-        self.AddForce(gravity*5f);
+        Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight;
+        self.AddForce(gravity*15f);
 
         Vector3 orientVec = Vector3.zero;
 
-        if (posVec.sqrMagnitude < 1)
+        //if (posVec.sqrMagnitude < 64)
         {
             orientVec = Vector3.Cross(transform.up, normalVec);
         }
-        else
+       /* else
         {
             orientVec = Vector3.Cross(transform.up, -posVec);
-        }
+        }*/
 
 
         self.AddTorque(orientVec*orientStrength*2);
+        //transform.Rotate(orientVec, orientStrength);
+ 
 
         if(!inPit && fuel > 0 && RaceManager.current.allowFuel){
             speedTerm = 20f - fuel * 0.4f;
@@ -488,6 +502,14 @@ public class CarPhysics : MonoBehaviour
         if(Vector3.Dot(deltaPosition, posVec)>0){
             deltaPosition = Vector3.ProjectOnPlane(deltaPosition, posVec);
         }
+        
+        {
+            RaycastHit Hit;
+            if(Physics.Raycast(transform.position, deltaPosition, out Hit, deltaPosition.magnitude, LayerMask.GetMask("Track"))){
+                deltaPosition = deltaPosition.normalized * (hit.distance * 0.4f);
+            }
+        }
+
 
         turning = false;
         traction = Traction;

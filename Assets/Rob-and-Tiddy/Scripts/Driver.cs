@@ -270,6 +270,7 @@ public class Driver : NetworkBehaviour
     {
         UIController.current.setDriverTags();
         UIController.current.showMessage(driverName + " just joined the game!", 3);
+        
     }
 
     [Command]
@@ -291,14 +292,19 @@ public class Driver : NetworkBehaviour
     {
         startingFuel = 50;
         starterRank = SceneObjects.current.drivers.Count;
-        //driverName = "Driverface " + randomPos.ToString();
+        if(UIController.current.driverNameField.text != "DriverFace [RandomNumber]"){
+            driverName = UIController.current.driverNameField.text;
+        }else{
+
+            driverName = "DriverFace " + randomPos.ToString();
+        }
         carPhysics = GetComponent<CarPhysics>();
         carPhysics.driver = this;
         carPhysics.fuel = startingFuel;
         CmdSelectCar(tempCarIndex);
         SceneObjects.current.drivers.Add(gameObject);
         CmdSetDriverStartUI();
-        
+        UIController.current.closeNameWindow();
 
     }
 
@@ -358,7 +364,7 @@ public class Driver : NetworkBehaviour
     float lookDistanceAboveCar = 0.2f;
 
     [Range(0, 1)]
-    float lookSpeed = 0.1f;
+    float lookSpeed = 0.04f;
     [Range(0, 1)]
     float followSpeed = 0.1f;
     // Start is called before the first frame update

@@ -138,6 +138,12 @@ public class UIController : ControllerBase<UIController>
 
     public Text[] driverNameTags;
 
+    public InputField driverNameField;
+
+    public void closeNameWindow(){
+        driverNameField.gameObject.SetActive(false);
+    }
+
     public Slider fuel;
     public Slider turbo;
 
