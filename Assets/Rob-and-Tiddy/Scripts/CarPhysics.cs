@@ -383,12 +383,13 @@ public class CarPhysics : MonoBehaviour
 
         
 
-        if(posVec.sqrMagnitude < 100){
+        if(posVec.sqrMagnitude < 1){
             thrust = 1;
-        }else
-        if(posVec.sqrMagnitude < 9){
-            thrust = 0.6f;
         }
+        /*else
+        if(posVec.sqrMagnitude < 4){
+            thrust = 0.6f;
+        }*/
         else
         {
             thrust = 1 / (1f * posVec.sqrMagnitude);
@@ -398,21 +399,33 @@ public class CarPhysics : MonoBehaviour
             thrust *= 1 - MainController.current.turningThrustLoss;
         }
 
-        if(posVec.sqrMagnitude > 100){
+        if(posVec.sqrMagnitude > 9){
 
             propulsion *= 0.95f;
         }
 
-        if(posVec.magnitude > 10){
+
+        /*if(posVec.sqrMagnitude > 10){
             propulsion *= (1 - 5 * 0.01f);
-        }
+        }*/
 
         Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight;
 
-        self.AddForce(gravity*10f);
+        self.AddForce(gravity*15f);
 
-        Vector3 orientVec = Vector3.Cross(transform.up, normalVec);
-        self.AddTorque(orientVec*orientStrength);
+        Vector3 orientVec = Vector3.zero;
+
+        if (posVec.sqrMagnitude < 1)
+        {
+            orientVec = Vector3.Cross(transform.up, normalVec);
+        }
+        else
+        {
+            orientVec = Vector3.Cross(transform.up, -posVec);
+        }
+
+
+        self.AddTorque(orientVec*orientStrength*2);
 
         if(!inPit && fuel > 0 && RaceManager.current.allowFuel){
             speedTerm = 20f - fuel * 0.4f;
