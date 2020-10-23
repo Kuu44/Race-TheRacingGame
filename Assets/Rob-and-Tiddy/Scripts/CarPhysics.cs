@@ -409,9 +409,9 @@ public class CarPhysics : MonoBehaviour
             propulsion *= (1 - 5 * 0.01f);
         }*/
 
-        Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight;
+        Vector3 gravity = posVec.normalized * MainController.current.gravityConstant * MainController.current.averageCarWeight * posVec.sqrMagnitude;
 
-        self.AddForce(gravity*15f);
+        self.AddForce(gravity*5f);
 
         Vector3 orientVec = Vector3.zero;
 

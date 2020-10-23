@@ -358,7 +358,7 @@ public class Driver : NetworkBehaviour
     float lookDistanceAboveCar = 0.2f;
 
     [Range(0, 1)]
-    float lookSpeed = 0.04f;
+    float lookSpeed = 0.1f;
     [Range(0, 1)]
     float followSpeed = 0.1f;
     // Start is called before the first frame update
