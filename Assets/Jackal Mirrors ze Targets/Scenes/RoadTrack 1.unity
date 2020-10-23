@@ -1016,7 +1016,7 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   transport: {fileID: 2011504736}
-  networkAddress: localhost
+  networkAddress: kuu44.centralindia.cloudapp.azure.com
   maxConnections: 10
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
