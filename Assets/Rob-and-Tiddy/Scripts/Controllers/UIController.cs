@@ -174,7 +174,10 @@ public class UIController : ControllerBase<UIController>
             if (tempCar != null)
             {
                 Transform carTransform = tempCar.transform;
-                driverNameTags[i].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(carTransform.position + carTransform.up);
+                Vector3 pos = Camera.main.WorldToScreenPoint(carTransform.position + carTransform.up);
+                if(pos.z > 0){
+                    driverNameTags[i].rectTransform.anchoredPosition = pos;
+                }
             }
         }
     }
