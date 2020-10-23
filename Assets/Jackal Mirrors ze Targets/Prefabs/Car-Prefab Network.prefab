@@ -144,7 +144,7 @@ MonoBehaviour:
   syncInterval: 0.1
   startingFuel: 50
   phase: 0
-  driverName: DriverMcDriveyFace
+  driverName: DriveryFace
   carPhysics: {fileID: 0}
   starterRank: 0
   tempCarIndex: 0

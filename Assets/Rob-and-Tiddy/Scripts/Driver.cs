@@ -291,7 +291,7 @@ public class Driver : NetworkBehaviour
     {
         startingFuel = 50;
         starterRank = SceneObjects.current.drivers.Count;
-        driverName = "Driverface " + randomPos.ToString();
+        //driverName = "Driverface " + randomPos.ToString();
         carPhysics = GetComponent<CarPhysics>();
         carPhysics.driver = this;
         carPhysics.fuel = startingFuel;

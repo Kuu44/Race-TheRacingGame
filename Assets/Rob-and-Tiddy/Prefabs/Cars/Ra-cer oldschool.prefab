@@ -906,7 +906,7 @@ MonoBehaviour:
   acceleration: 45
   turnStrength: 10
   Traction: 1
-  orientStrength: 3
+  orientStrength: 8
   brakeFactor: 3
   thrusters:
   - {fileID: 6763102838462722718}
