@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!64 &5372870699077094179
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5066880253655610996}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3530945768078225325, guid: f6446081c0d5bd24aa5ea9fc34be6fc0, type: 3}
 --- !u!1 &5372870698703088950
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,20 +252,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!64 &5372870699077094179
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5066880253655610996}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3530945768078225325, guid: f6446081c0d5bd24aa5ea9fc34be6fc0, type: 3}
 --- !u!1 &5372870699246517319
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,6 +836,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 388.66586
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: f6446081c0d5bd24aa5ea9fc34be6fc0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dc5a3effbccff8b4aa1868b62d2ee386, type: 2}
     - target: {fileID: 919132149155446097, guid: f6446081c0d5bd24aa5ea9fc34be6fc0, type: 3}
       propertyPath: m_Name
       value: TexturedTrack2

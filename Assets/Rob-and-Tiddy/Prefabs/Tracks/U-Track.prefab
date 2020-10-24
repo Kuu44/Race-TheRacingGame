@@ -794,7 +794,7 @@ GameObject:
   - component: {fileID: 7908774114520344543}
   - component: {fileID: 3057250569254140770}
   - component: {fileID: 4035617628318615769}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PitLaneMesh3
   m_TagString: Track
   m_Icon: {fileID: 0}
@@ -984,7 +984,7 @@ GameObject:
   - component: {fileID: 2557150288992117200}
   - component: {fileID: 5146918621867743800}
   - component: {fileID: 6154498029919905541}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PitLaneMesh1
   m_TagString: Track
   m_Icon: {fileID: 0}
@@ -2545,7 +2545,7 @@ GameObject:
   - component: {fileID: 2780712024692870934}
   - component: {fileID: 6133800674265016362}
   - component: {fileID: 1585805974995240584}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PitLaneMesh2
   m_TagString: Track
   m_Icon: {fileID: 0}

@@ -5959,8 +5959,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 110
-  acceleration: 35
-  turnStrength: 10
+  acceleration: 30
+  turnStrength: 8
   Traction: 1
   orientStrength: 5
   brakeFactor: 2
