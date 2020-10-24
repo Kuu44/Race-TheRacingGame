@@ -140,6 +140,8 @@ public class UIController : ControllerBase<UIController>
 
     public InputField driverNameField;
 
+    public GameObject spectatorModeIndicator;
+
     public void closeNameWindow(){
         driverNameField.gameObject.SetActive(false);
     }

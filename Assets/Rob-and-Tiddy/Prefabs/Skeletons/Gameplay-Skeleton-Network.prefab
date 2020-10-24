@@ -838,6 +838,7 @@ MonoBehaviour:
   - {fileID: 6561015728295344426}
   - {fileID: 7368488520379233062}
   driverNameField: {fileID: 2332140282679776275}
+  spectatorModeIndicator: {fileID: 1573295185977145686}
   fuel: {fileID: 7790498235477713214}
   turbo: {fileID: 7180553165977346832}
 --- !u!1 &8624492892363691679
@@ -1305,6 +1306,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1573295185977145686 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7327323970566340845, guid: a4c446fb10978bc4da4b1a5d8a2c5839, type: 3}
+  m_PrefabInstance: {fileID: 8104955365838305723}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7478346642288634973 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1707701333637289446, guid: a4c446fb10978bc4da4b1a5d8a2c5839, type: 3}

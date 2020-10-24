@@ -8,7 +8,7 @@ public enum Phase { Practicing, Qualifying, Qualified, Racing, PostRace };
 
 public class Driver : NetworkBehaviour
 {
-
+    public bool spectatorCameraMode = false;
     int randomPos
     {
         get
@@ -336,8 +336,27 @@ public class Driver : NetworkBehaviour
             return;
         }
 
+        if (Input.GetKeyUp("l")){
+            if (spectatorCameraMode)
+            {
+                UIController.current.spectatorModeIndicator.SetActive(false);
+            }
+            else
+            {
+                UIController.current.spectatorModeIndicator.SetActive(true);
+            }
+            spectatorCameraMode = !spectatorCameraMode;
+        }
 
-        Move();
+
+        if (spectatorCameraMode)
+        {
+
+        }
+        else
+        {
+            Move();
+        }
 
 
         if (Time.frameCount % 10 == 0)
@@ -354,8 +373,14 @@ public class Driver : NetworkBehaviour
     {
         if (!isLocalPlayer)
             return;
-
-        FixedMove();
+        if (spectatorCameraMode)
+        {
+            FixedSpectatorMove();
+        }
+        else
+        {
+            FixedMove();
+        }
 
     }
 
@@ -399,6 +424,22 @@ public class Driver : NetworkBehaviour
 
     }
 
+    void FixedSpectatorMove()
+    {
+        float inputX = Input.GetAxisRaw("Horizontal");
+        float inputY = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKey(KeyCode.Space)){
+            Camera.main.transform.position += Camera.main.transform.forward*0.5f;
+        }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            Camera.main.transform.position -= Camera.main.transform.forward * 0.5f;
+        }
+
+        Camera.main.transform.Rotate(Camera.main.transform.up, inputX);
+        Camera.main.transform.Rotate(Vector3.right, inputY);
+    }
 
     void FixedMove()
     {
