@@ -187,6 +187,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3609658400544236971, guid: a4b249d322aaa714dac803f4137e67ce, type: 3}
+      propertyPath: carPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3609658400544236971, guid: a4b249d322aaa714dac803f4137e67ce, type: 3}
+      propertyPath: carPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 4222919151537039463, guid: 07019a56e2c2250488949e15baa4f4e2, type: 3}
     - target: {fileID: 3707333098806273096, guid: a4b249d322aaa714dac803f4137e67ce, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

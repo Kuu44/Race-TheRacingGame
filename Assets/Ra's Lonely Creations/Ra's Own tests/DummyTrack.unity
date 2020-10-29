@@ -236,9 +236,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4044456194371822612, guid: cbbdbe3631b7e6548a598bf9cb7540f8, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044456194371822612, guid: cbbdbe3631b7e6548a598bf9cb7540f8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4336530978781034436, guid: cbbdbe3631b7e6548a598bf9cb7540f8, type: 3}
       propertyPath: m_Name
       value: Gameplay-Skeleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6673895414999490038, guid: cbbdbe3631b7e6548a598bf9cb7540f8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6770443484235291669, guid: cbbdbe3631b7e6548a598bf9cb7540f8, type: 3}
+      propertyPath: syncMode
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbbdbe3631b7e6548a598bf9cb7540f8, type: 3}
