@@ -15,6 +15,7 @@ TagManager:
   - CarMesh
   - Minimap Camera
   - NoDecayZone
+  - NodeLink
   layers:
   - Default
   - TransparentFX

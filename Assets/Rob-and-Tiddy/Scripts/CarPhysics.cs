@@ -34,7 +34,14 @@ public class CarPhysics : MonoBehaviour
             }
         }
 
-        if(other.tag == "NoDecayZone"){
+        if (other.tag == "NodeLink")
+        {
+            nodeColliders.Remove(other.transform);
+            trackFront = calculateTrackFront();
+        }
+
+
+        if (other.tag == "NoDecayZone"){
             speedDecay = true;
         }
 
@@ -66,8 +73,19 @@ public class CarPhysics : MonoBehaviour
             inPit = true;
         }
 
-        
-        if(other.tag == "NoDecayZone"){
+        if (nodeColliders.Count == 0)
+        {
+            if (other.tag == "NodeLink")
+            {
+                nodeColliders.Add(other.transform);
+                trackFront = calculateTrackFront();
+                latestNode = int.Parse(other.name);
+            }
+        }
+
+
+
+        if (other.tag == "NoDecayZone"){
             speedDecay = false;
         }
 
@@ -91,10 +109,44 @@ public class CarPhysics : MonoBehaviour
 
                     if (driver != null)
                     {
-                        driver.TargetSetUI();
+                        driver.SetFuelTurboUI();
                     }
                 }
             }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "NodeLink")
+        {
+            nodeColliders.Add(other.transform);
+            trackFront = calculateTrackFront();
+            latestNode = int.Parse(other.name);
+        }
+    }
+
+    List<Transform> nodeColliders = new List<Transform>();
+
+    int latestNode = 0;
+
+    Vector3 trackFront;
+    Vector3 calculateTrackFront()
+    {
+        int n = nodeColliders.Count;
+        if(n > 0)
+        {
+            Vector3 result = Vector3.zero;
+            for(int i = 0; i < n; i++)
+            {
+                result += nodeColliders[i].forward;
+            }
+
+            return result.normalized;
+        }
+        else
+        {
+            return transform.forward;
         }
     }
 
@@ -168,6 +220,8 @@ public class CarPhysics : MonoBehaviour
     Vector3 propulsion;
     float traction;
     float dragFactor;
+
+    public int trackCovered = 0;
 
 
     public void StartThrusters(){
@@ -253,7 +307,7 @@ public class CarPhysics : MonoBehaviour
 
         if (driver != null)
         {
-            driver.TargetSetUI();
+            driver.SetFuelTurboUI();
         }
 
 
@@ -278,7 +332,65 @@ public class CarPhysics : MonoBehaviour
             print("Track/Grid position not found, disabling car to avoid errors");
             this.enabled = false;
         }
+
+
+        if (SceneObjects.current.nodesExist)
+        {
+            /*int n = SceneObjects.current.nodeCount;
+            float minDist = float.MaxValue;
+            for(int i = 0; i < n; i++)
+            {
+                int ii = i + 1;
+                if (ii == n)
+                {
+                    ii = 0;
+                }
+                Vector3 myPosToNode = transform.position - SceneObjects.current.trackNodes[i];
+                Vector3 currentConnection = SceneObjects.current.trackConnections[i];
+                Vector3 myPosToNextNode = transform.position - SceneObjects.current.trackNodes[ii];
+                if (Vector3.Dot(myPosToNode, currentConnection) >= -50 && Vector3.Dot(myPosToNextNode, -currentConnection) >= -50)
+                {
+                    float dist = Vector3.Cross(myPosToNode, currentConnection).sqrMagnitude / (currentConnection.sqrMagnitude * 1.0f);
+                    Debug.Log("Testing node: " + i.ToString() + " distance = " + dist.ToString());
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        nodeBehind = i;
+                    }
+                }
+            }
+            SceneObjects.current.nodeMarkers[0].position = SceneObjects.current.trackNodes[nodeBehind];
+            SceneObjects.current.nodeMarkers[1].position = SceneObjects.current.trackNodes[nodeAhead];*/
+            trackFront = calculateTrackFront();
+
+        }
         
+    }
+
+    int nodeBehind = 0;
+
+    int nodeAhead
+    {
+        get
+        {
+            if(latestNode >= SceneObjects.current.nodeCount - 1)
+            {
+                return 0;
+            }
+            else
+            {
+                return latestNode + 1;
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (SceneObjects.current.nodeCount > 0)
+        {
+            if (Time.frameCount % 50 == 0)
+                trackCovered = (int)(SceneObjects.current.nodePercentages[latestNode] + ((transform.position - SceneObjects.current.trackNodes[latestNode]).magnitude * (SceneObjects.current.nodePercentages[nodeAhead] - SceneObjects.current.nodePercentages[latestNode])) / SceneObjects.current.trackConnections[latestNode].magnitude);
+        }
     }
 
     float speedTerm = 0;
@@ -294,7 +406,7 @@ public class CarPhysics : MonoBehaviour
 
                 if (driver != null)
                 {
-                    driver.TargetSetUI();
+                    driver.SetFuelTurboUI();
                 }
             }
             if(fuel <= 0  && tempAerodynamic > 10){
@@ -439,9 +551,82 @@ public class CarPhysics : MonoBehaviour
 
         self.AddTorque(orientVec*orientStrength*2);
         //transform.Rotate(orientVec, orientStrength);
- 
 
-        if(!inPit && fuel > 0 && RaceManager.current.allowFuel){
+        //Align towards track forward
+        if (SceneObjects.current.nodesExist)
+        {
+            /* Vector3 myPosToNode = transform.position - SceneObjects.current.trackNodes[nodeBehind];
+              Vector3 currentConnection = SceneObjects.current.trackConnections[nodeBehind];
+              Vector3 myPosToNextNode = transform.position - SceneObjects.current.trackNodes[nodeAhead];*/
+            /* int resetPoint = nodeBehind;
+             //Debug.Log(" Frame change");
+             //Debug.Log(" Testing node " + nodeBehind.ToString() + " dot1 = " + Vector3.Dot(myPosToNode, currentConnection).ToString() + " dot2 = " + Vector3.Dot(myPosToNextNode, -currentConnection).ToString());
+             while (!(Vector3.Dot(myPosToNode, currentConnection) >= -20 && Vector3.Dot(myPosToNextNode, -currentConnection) >= -20))
+             {
+                 nodeBehind += 1;
+
+                 if(nodeBehind == SceneObjects.current.nodeCount)
+                 {
+                     nodeBehind = 0;
+                 }
+                 if (nodeBehind == resetPoint)
+                 {
+                     break;
+                 }
+
+                 myPosToNode = transform.position - SceneObjects.current.trackNodes[nodeBehind];
+                 currentConnection = SceneObjects.current.trackConnections[nodeBehind];
+                 myPosToNextNode = transform.position - SceneObjects.current.trackNodes[nodeAhead];
+
+                 //Debug.Log(" Testing node " + nodeBehind.ToString() + " dot1 = " + Vector3.Dot(myPosToNode, currentConnection).ToString() + " dot2 = " + Vector3.Dot(myPosToNextNode, -currentConnection).ToString());
+             }*/
+
+            /*int n = SceneObjects.current.nodeCount;
+            float minDist = float.MaxValue;
+            for (int i = 0; i < n; i++)
+            {
+                int ii = i + 1;
+                if (ii == n)
+                {
+                    ii = 0;
+                }
+                 myPosToNode = transform.position - SceneObjects.current.trackNodes[i];
+                 currentConnection = SceneObjects.current.trackConnections[i];
+                 myPosToNextNode = transform.position - SceneObjects.current.trackNodes[ii];
+                if (Vector3.Dot(myPosToNode, currentConnection) >= -50 && Vector3.Dot(myPosToNextNode, -currentConnection) >= -50)
+                {
+                    float dist = Vector3.Cross(myPosToNode, currentConnection).sqrMagnitude / (currentConnection.sqrMagnitude * 1.0f);
+                    //Debug.Log("Testing node: " + i.ToString() + " distance = " + dist.ToString());
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        nodeBehind = i;
+                    }
+                }
+            }
+            SceneObjects.current.nodeMarkers[0].position = SceneObjects.current.trackNodes[nodeBehind];
+            SceneObjects.current.nodeMarkers[1].position = SceneObjects.current.trackNodes[nodeAhead];
+            
+
+            //Debug.Log(currentConnection.magnitude);
+            Debug.DrawRay(SceneObjects.current.trackNodes[nodeBehind], myPosToNode, Color.yellow);
+            Debug.DrawRay(SceneObjects.current.trackNodes[nodeAhead], myPosToNextNode, Color.green);
+            Debug.DrawRay(SceneObjects.current.trackNodes[nodeBehind] + Vector3.up * 10, currentConnection, Color.red);
+
+
+            SceneObjects.current.nodeMarkers[0].position = SceneObjects.current.trackNodes[nodeBehind];
+            SceneObjects.current.nodeMarkers[1].position = SceneObjects.current.trackNodes[nodeAhead];*/
+            if (!turning)
+            {
+                orientVec = Vector3.Cross(transform.forward, trackFront);
+                self.AddTorque(orientVec * orientStrength * 0.04f);
+            }
+        }
+
+    
+
+
+        if (!inPit && fuel > 0 && RaceManager.current.allowFuel){
             speedTerm = 20f - fuel * 0.4f;
         }
 
@@ -466,7 +651,7 @@ public class CarPhysics : MonoBehaviour
 
             if (driver != null)
             {
-                driver.TargetSetUI();
+                driver.SetFuelTurboUI();
             }
         }
         dragFactor = 1 - propulsion.magnitude * acceleration / (((tempAerodynamic + speedTerm) * 35000.0f));
@@ -495,7 +680,7 @@ public class CarPhysics : MonoBehaviour
         if(driver.isLocalPlayer)
         if(driver != null)
                 {
-                    driver.TargetSetSpeedUI();
+                    driver.SetSpeedUI();
                 }
         
         deltaPosition = propulsion * (Time.fixedDeltaTime) * 0.1f;

@@ -27,6 +27,7 @@ public class Driver : NetworkBehaviour
     int currentQualifyingLap = 0;
     bool preQualifyingLap = false;
 
+    [SyncVar]
     public string driverName = "DriverMcDriveyFace";
     GameObject carMesh;
     Car car;
@@ -117,6 +118,12 @@ public class Driver : NetworkBehaviour
         return result;
     }
 
+    [Command]
+    void CmdSubmitQualifyLapTime(float timeInSeconds, string driverName)
+    {
+        RaceManager.current.ServerAddQualifyLapTime(timeInSeconds, driverName);
+    }
+
     //[TargetRpc]
     public void TargetOnPassFlag()
     {
@@ -142,7 +149,7 @@ public class Driver : NetworkBehaviour
 
                         UIController.current.StatusText.text = "Waiting";
                     }
-                    RaceManager.current.CmdAddQualifyLapTime(currentLapTime, driverName);
+                    CmdSubmitQualifyLapTime(currentLapTime, driverName);
                 }
                 else
                 {
@@ -210,18 +217,18 @@ public class Driver : NetworkBehaviour
 
     }
 
-    //[TargetRpc]
-    public void TargetSetUI()
+    public void SetFuelTurboUI()
     {
         UIController.current.setFuelSlider(carPhysics.fuel);
         UIController.current.setTurboSlider(carPhysics.turbo);
     }
 
 
-    //[TargetRpc]
-    public void TargetSetSpeedUI()
+
+    public void SetSpeedUI()
     {
         UIController.current.speed = carPhysics.speed;
+        UIController.current.StatusText.text = (currentRaceLap-1).ToString() + " + " + carPhysics.trackCovered.ToString() + "% of track covered";
     }
 
     [Command]
@@ -290,6 +297,15 @@ public class Driver : NetworkBehaviour
 
     void Start()
     {
+
+        SceneObjects.current.drivers.Add(gameObject);
+        carPhysics = GetComponent<CarPhysics>();
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
+        carPhysics.enabled = true;
         startingFuel = 50;
         starterRank = SceneObjects.current.drivers.Count;
         if(UIController.current.driverNameField.text != "DriverFace [RandomNumber]"){
@@ -298,11 +314,11 @@ public class Driver : NetworkBehaviour
 
             driverName = "DriverFace " + randomPos.ToString();
         }
-        carPhysics = GetComponent<CarPhysics>();
+        
         carPhysics.driver = this;
         carPhysics.fuel = startingFuel;
         CmdSelectCar(tempCarIndex);
-        SceneObjects.current.drivers.Add(gameObject);
+        
         CmdSetDriverStartUI();
         UIController.current.closeNameWindow();
 
