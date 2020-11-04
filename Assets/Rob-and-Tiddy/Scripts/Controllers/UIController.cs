@@ -132,6 +132,9 @@ public class UIController : ControllerBase<UIController>
     public GameObject qualificationRankings;
     public Text[] qualificationRanks;
 
+    public GameObject slipstreamIndicator;
+    public GameObject turboIndicator;
+
     public GameObject raceRankings;
     public Text[] raceRanks;
     public Text currentLapTime;

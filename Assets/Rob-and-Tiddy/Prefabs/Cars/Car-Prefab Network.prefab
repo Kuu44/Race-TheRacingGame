@@ -143,11 +143,13 @@ MonoBehaviour:
   Traction: 1
   orientStrength: 3
   brakeFactor: 3
+  orientToTrackFront: 1
   thrusters:
   - {fileID: 0}
   - {fileID: 0}
   tyres: []
   tyreSuspensions: []
+  trackCovered: 0
 --- !u!135 &7462978233502958456
 SphereCollider:
   m_ObjectHideFlags: 0

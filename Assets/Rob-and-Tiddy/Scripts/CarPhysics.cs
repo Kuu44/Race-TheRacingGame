@@ -207,6 +207,10 @@ public class CarPhysics : MonoBehaviour
     [HideInInspector]
     public float brakeFactor = 5;
 
+    //[HideInInspector]
+    [Range(0,30)]
+    public float orientToTrackFront = 1f;
+
     float tempAerodynamic;
     float thrust = 1;
     [HideInInspector]
@@ -281,6 +285,7 @@ public class CarPhysics : MonoBehaviour
 
     public void useTurbo(){
         if(!turboOn){
+            UIController.current.turboIndicator.SetActive(true);
             turboOn = true;
         }
 
@@ -288,7 +293,7 @@ public class CarPhysics : MonoBehaviour
 
     public void stopTurbo(){
         turboOn = false;
-
+        UIController.current.turboIndicator.SetActive(false);
     }
 
     bool turboOn = false;
@@ -619,7 +624,7 @@ public class CarPhysics : MonoBehaviour
             if (!turning)
             {
                 orientVec = Vector3.Cross(transform.forward, trackFront);
-                self.AddTorque(orientVec * orientStrength * 0.04f);
+                self.AddTorque(orientVec * orientToTrackFront * 0.25f);
             }
         }
 
@@ -634,6 +639,13 @@ public class CarPhysics : MonoBehaviour
         RaycastHit slipStreamRay;
         if(Physics.SphereCast(transform.position, 1, transform.forward, out slipStreamRay, 40, LayerMask.GetMask("Car"))){
             speedTerm += 40 - hit.distance;
+            UIController.current.slipstreamIndicator.SetActive(true);
+        }
+        else
+        {
+
+                UIController.current.slipstreamIndicator.SetActive(false);
+            
         }
 
 
