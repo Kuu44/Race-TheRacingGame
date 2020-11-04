@@ -1100,6 +1100,13 @@ MonoBehaviour:
   - {fileID: 164909134276924219, guid: 6fe3b95023e2afb43b96ec99775ceee3, type: 3}
   - {fileID: 8313232322299809116, guid: f8d23e671d623f041859c1eddd9c18df, type: 3}
   - {fileID: 6180637792033033008, guid: 8fcd0f3918832334b9e0ac87804a9108, type: 3}
+  trackPrefabs:
+  - {fileID: 3294207177922015323, guid: ed05b3ae462093744983309f405e6f6c, type: 3}
+  - {fileID: 3294207177922015323, guid: f52f20a148c8b3b409bf95b2956756ac, type: 3}
+  - {fileID: 3294207177922015323, guid: 7766809ea8538834b901661498a88862, type: 3}
+  - {fileID: 3294207177922015323, guid: e8820e5ad780a754cbf4ab762abda074, type: 3}
+  - {fileID: 4831045700176305178, guid: 4aaacec99e6e9ee4dbfd8e472a1f5a49, type: 3}
+  - {fileID: 7841323540139521508, guid: 823c6673c2b94dc4086783f70bee28bf, type: 3}
   drivers: []
   driverPrefab: {fileID: 8829849754517667854, guid: 9da635ea5d64d094a94b973fd6fa4a97, type: 3}
   track: {fileID: 0}

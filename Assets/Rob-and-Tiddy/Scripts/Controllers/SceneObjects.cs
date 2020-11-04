@@ -22,9 +22,39 @@ public class SceneObjects : NetworkBehaviour
     {
         _current = this as SceneObjects;
 
-        track = GameObject.FindGameObjectWithTag("TrackBase").transform;
+        SelectTrack(-1);
+        //carCam = Camera.main;
 
-        for (int i = 0; i < track.Find("TrackWaypoints").childCount; i++){
+    }
+
+    public void SelectTrack(int index)
+    {
+        track = null;
+        trackWayPoints.Clear();
+        gridPositions.Clear();
+        nodeCount = 0;
+        nodesExist = false;
+        nodes.Clear();
+        trackNodes.Clear();
+        trackConnections.Clear();
+        trackLength = 0;
+        nodePercentages.Clear();
+
+        if (index == -1)
+        {
+            track = GameObject.FindGameObjectWithTag("TrackBase").transform;
+            if(track == null)
+            {
+                track = Instantiate(trackPrefabs[0]).transform;
+            }
+        }
+        else
+        {
+            track = Instantiate(trackPrefabs[index]).transform;
+        }
+
+        for (int i = 0; i < track.Find("TrackWaypoints").childCount; i++)
+        {
             trackWayPoints.Add(track.Find("TrackWaypoints").GetChild(i));
         }
         track = GameObject.FindGameObjectWithTag("TrackBase").transform;
@@ -35,23 +65,23 @@ public class SceneObjects : NetworkBehaviour
 
         if (track.Find("TrackNodes") != null)
         {
-            nodeCount =  track.Find("TrackNodes").childCount;
+            nodeCount = track.Find("TrackNodes").childCount;
             nodesExist = true;
             for (int i = 0; i < nodeCount; i++)
             {
                 trackNodes.Add(track.Find("TrackNodes").GetChild(i).position);
                 nodes.Add(track.Find("TrackNodes").GetChild(i));
                 nodes[i].name = i.ToString();
- 
-                int ii = i+1;
-                if(ii == nodeCount)
+
+                int ii = i + 1;
+                if (ii == nodeCount)
                 {
                     ii = 0;
                 }
                 trackConnections.Add(track.Find("TrackNodes").GetChild(ii).position - trackNodes[i]);
                 nodePercentages.Add(trackLength);
                 trackLength += trackConnections[i].magnitude;
-                
+
             }
 
             for (int i = 0; i < nodeCount; i++)
@@ -67,15 +97,13 @@ public class SceneObjects : NetworkBehaviour
                 CapsuleCollider cap = nodes[i].GetComponent<CapsuleCollider>();
                 cap.height = (nodes[ii].localPosition - nodes[i].localPosition).magnitude + 3f;
                 cap.radius = 1.5f;
-                cap.center = new Vector3(0,0,(nodes[ii].localPosition - nodes[i].localPosition).magnitude * 0.5f);
+                cap.center = new Vector3(0, 0, (nodes[ii].localPosition - nodes[i].localPosition).magnitude * 0.5f);
                 nodes[i].rotation = Quaternion.FromToRotation(nodes[i].forward, nodes[ii].position - nodes[i].position);
 
 
                 trackConnections.Add(track.Find("TrackNodes").GetChild(ii).position - trackNodes[i]);
             }
         }
-        //carCam = Camera.main;
-
     }
  
     [System.Obsolete]
@@ -100,13 +128,14 @@ public class SceneObjects : NetworkBehaviour
     public float trackLength;
 
     public List<GameObject> carPrefabs;
+    public List<GameObject> trackPrefabs;
     //public List<GameObject> cars = new List<GameObject>();
     [SyncVar]
     public List<GameObject> drivers;
 
     public GameObject driverPrefab;
 
-
+    [HideInInspector]
     public Transform track;
     //public List<Vector3> trackEnvelops = new List<Vector3>();
 
